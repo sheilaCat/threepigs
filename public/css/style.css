@@ -1,0 +1,25 @@
+body{background-color:#1e2025;overflow: hidden;}
+
+#nav{background-color:#363840;width: 237px;height:897px;text-align: center;position: fixed;top: 0px;}
+#content{color: red;}
+#content>.rooms{position: absolute;margin-left: 300px;margin-top: 60px;}
+#content h1{font-family:'黑体';font-size: 35px;color: #919191;font-weight: bold;padding-top: 70px;margin-left: 300px}
+h1>.btn{font-size: 13px;font-family: '宋体';margin-left: 15px;background-color: #00aeef;color:#fff;}
+ul li a{color: #00aeef;}
+.nav>.active>a:focus,.nav>li>a:hover,.nav>li>a:visited{background-color: #1e2025;
+			-webkit-transition-duration:1s;
+			-moz-transition-duration:1s;
+			-ms-transition-duration:1s;
+			-o-transition-duration:1s;}
+.nav>li>a:hover{color:#fff;}
+.profile{padding-top: 40px;padding-bottom: 50px;}
+.btn>.room>h5,h6{color: #969696;font-size: 12px;display: inline;margin-right: 20px;margin-left: 20px;}
+.btn>.room>h5{text-align: left;}
+.btn>.room>h6{text-align: right;margin-left: 200px;}
+.btn>.room>p{color: #fff;text-align: left;margin-left: 20px;}
+.btn-group-vertical>.btn:focus,.btn:hover{background-color: #5a5a5a;
+			-webkit-transition-duration:1s;
+			-moz-transition-duration:1s;
+			-ms-transition-duration:1s;
+			-o-transition-duration:1s;}
+.btn{background-color: #363840;border-color: #1e2025}
