@@ -1,13 +1,12 @@
-body{background-color:#1e2025;overflow: hidden;}
+body{background-color:#1e2025;overflow-x: hidden;}
 
 #nav{background-color:#363840;width: 237px;height:897px;text-align: center;position: fixed;top: 0px;}
-#content{color: red;}
 #content>.rooms{position: absolute;margin-left: 300px;margin-top: 60px;}
 #content h1{font-family:'黑体';font-size: 35px;color: #919191;font-weight: bold;padding-top: 70px;margin-left: 300px}
 h1>.btn{font-size: 13px;font-family: '宋体';margin-left: 15px;background-color: #00aeef;color:#fff;}
 ul li a{color: #00aeef;}
 .nav>.active>a:focus,.nav>li>a:hover,.nav>li>a:visited{background-color: #1e2025;
-			-webkit-transition-duration:1s;
+    		-webkit-transition-duration:1s;
 			-moz-transition-duration:1s;
 			-ms-transition-duration:1s;
 			-o-transition-duration:1s;}
@@ -23,3 +22,8 @@ ul li a{color: #00aeef;}
 			-ms-transition-duration:1s;
 			-o-transition-duration:1s;}
 .btn{background-color: #363840;border-color: #1e2025}
+.canvas{background-color: gray;padding-top: 200px;margin-left: 300px;width: 700px;height:500px;border-radius: 10px;}
+#files{padding-top:50px;margin-left: 300px;}
+.file{width: 200px;}
+#content >#files>.row>.col-lg-3>.file>h1{font-family:'宋体';margin-left:60px;font-size: 15px;color:#fff;font-weight: normal;text-align: left;padding-top: 0px}
+#content >#files>.row>.col-lg-3>.file>p{font-size: 13px;color:#00aeef;margin-left: 50px;}
