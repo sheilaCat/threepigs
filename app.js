@@ -42,6 +42,7 @@ app.post("/toUploadFile",filesRequestHandlers.toUploadFile);//文件上传
 //app.get("/toSearchFile",filesRequestHandlers.toSearchFile);//搜索文件
 //app.get("/toDeleteFile",filesRequestHandlers.toDeleteFile);//删除文件
 //app.post("/toSubmitComment",filesRequestHandlers.toSubmitComment);//提交资料评论
+app.get("/pdftopng",filesRequestHandlers.pdfToPng); //测试pdf转png
 
 //账户请求处理
 
@@ -64,6 +65,8 @@ app.get("/toDeleteFileFromRoom",roomRequestHandlers.toDeleteFileFromRoom);//删�
 app.get("/toShowFile",roomRequestHandlers.toShowFile);//展示资料
 app.get("/toStartVoice",roomRequestHandlers.toStartVoice);//发起语音
 app.get("/toPassPaint",roomRequestHandlers.toPassPaint);//交换画笔
+
+app.get("/toGetAllRoom", roomRequestHandlers.toGetAllRoom);//获取所有房间
 
 
 //启动服务器

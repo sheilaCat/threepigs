@@ -1,57 +1,66 @@
 /**
-*´´½¨·¿¼ä
+*åˆ›å»ºæˆ¿é—´
 **/
 function toCreateNewRoom(req,res){
 	
 	
 }
 /**
-*¼ÓÈë·¿¼ä
+*åŠ å…¥æˆ¿é—´
 **/
 function toJoinRoom(req,res){
 	
 	
 }
 /**
-*ÍË³ö·¿¼ä
+*é€€å‡ºæˆ¿é—´
 **/
 function toQuitRoom(req,res){
 	
 	
 }
 /**
-*Ìí¼Ó×ÊÁÏ
+*æ·»åŠ èµ„æ–™
 **/
 function toAddFileToRoom(req,res){
 	
 	
 }
 /**
-*É¾³ı×ÊÁÏ
+*åˆ é™¤èµ„æ–™
 **/
 function toDeleteFileFromRoom(req,res){
 	
 	
 }/**
-*Õ¹Ê¾×ÊÁÏ
+*å±•ç¤ºèµ„æ–™
 **/
 function toShowFile(req,res){
 	
 	
 }
 /**
-*·¢ÆğÓïÒô
+*å‘èµ·è¯­éŸ³
 **/
 function toStartVoice(req,res){
 	
 	
 }
 /**
-*½»»»»­±Ê
+*äº¤æ¢ç”»ç¬”
 **/
 function toPassPaint(req,res){
 	
 	
+}
+/**
+*äº¤æ¢ç”»ç¬”
+**/
+function toGetAllRoom(req, res){
+
+	var Object = mongoDB.findAll(req, res, "room");
+	
+
 }
 
 exports.toCreateNewRoom = toCreateNewRoom;
@@ -62,3 +71,4 @@ exports.toDeleteFileFromRoom = toDeleteFileFromRoom;
 exports.toShowFile = toShowFile;
 exports.toStartVoice = toStartVoice;
 exports.toPassPaint = toPassPaint;
+exports.toGetAllRoom = toGetAllRoom;

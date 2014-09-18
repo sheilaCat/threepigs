@@ -2,7 +2,7 @@ var querystring = require("querystring"),
     fs = require("fs"),
     path = require("path"),
     formidable = require("formidable");
-
+// var pdfutils = require('pdfutils').pdfutils;
 var util = require('util');  
 var body = '';
  
@@ -113,8 +113,23 @@ function show(request, response) {
     }
   });
 
-} 
+}
+
+function pdfToPng (request, response) {
+//   try {
+//     pdfutils(__dirname+"/document.pdf", function(err, doc) {
+//       var i;
+//       for (i = 0; i < doc.length; i++) {
+//         doc[i].asPNG({maxWidth: 1200, maxHeight: 1200}).toFile(__dirname+'/../public/firstpage'+i+'.png');
+// debugger;
+//       }
+//     });
+//   } catch (error) {
+
+//   }
+}
 
 exports.start = start; 
 exports.toUploadFile = toUploadFile 
 exports.show = show; 
+exports.pdfToPng = pdfToPng; 

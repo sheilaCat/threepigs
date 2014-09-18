@@ -1,48 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="css/style.css">
-<title>demo</title></head>
+<script src = "js/jquery-2.1.1.js"></script>
+<script type="text/javascript">
+	function MenuController($scope){
+			$scope.mainShow=true;
+ 	$scope.toggleMenu = function($where){
+			if($where == 'main'){
+				$scope.mainShow=true;
+				$scope.squareShow=false;
+				$scope.roomShow=false;
+				$scope.settingShow=false;
+			}else if($where == 'square'){
+				$scope.mainShow=false;
+				$scope.roomShow=false;
+				$scope.squareShow=true;
+				$scope.settingShow=false;
+			}else if($where =='room'){
+				$scope.mainShow=false;
+				$scope.roomShow=true;
+				$scope.squareShow=false;
+				$scope.settingShow=false;
+			}else{
+				$scope.mainShow=false;
+				$scope.roomShow=false;
+				$scope.squareShow=false;
+				$scope.settingShow=true;
+			}
+
+		}
+	}
+</script>
+<title>三只小猪</title></head>
 <body>
-    <div id="nav">	
+<div id="page" ng-controller="MenuController">
+	<div id="nav">
 		<ul class="nav nav-list">
 			<div class = "profile">
-			<img class="profile" src="images/profile.png" /></div>
-			<li class="active"><a href="index.html">大厅</a></li>
-			<li><a href="square.html">广场</a></li>
-			<li><a href="#">设置</a></li>
+				<img class="profile" src="images/profile.png" />
+			</div>
+			<li><a href="#" ng-click="toggleMenu('main')">大厅</a></li>
+			<li><a href="#" ng-click="toggleMenu('square')">广场</a></li>
+			<li><a href="#" ng-click="toggleMenu('setting')">设置</a></li>
 		</ul>
-	</div>
+	</div><!-- /nav-->
 	<div id="content">
-		<h1>大厅<button type="button" class="btn btn-xs">建立新房间</button></h1>
-
-		<div class="rooms">
-		<div class="btn-group-vertical">
-			<button type="button" class="btn" onclick="location.href='room.html'">
-				<div class="room">
-				<h5>房间名：快来愉快地学习呀</h5><h6>房间编号：89757</h6>
-				<p>写点啥好呢……不知道啊……协作学习中……</p>
-				</div>
-			</button>
-
-			<button type="button" class="btn">
-				<div class="room">
-				<h5>房间名：快来愉快地学习呀</h5><h6>房间编号：89757</h6>
-				<p>写点啥好呢……不知道啊……协作学习中……</p>
-				</div>
-			</button>
-
-			<button type="button" class="btn">
-				<div class="room">
-				<h5>房间名：快来愉快地学习呀</h5><h6>房间编号：89757</h6>
-				<p>写点啥好呢……不知道啊……协作学习中……</p>
-				</div>
-			</button>
-		</div>
-		</div>
-		<!--/end rooms -->
+		<div ng-include="'main.html'" ng-show='mainShow'></div>
+		<div ng-include="'square.html'" ng-show="squareShow"></div>
+		<div ng-include="'room.html'" ng-show="roomShow"></div>
+		<div ng-include="'setting.html'" ng-show="settingShow"></div>
 	</div>
+	<script src= "js/angular.min.js"></script>
+</div><!-- /page -->
 </body>
 </html>
