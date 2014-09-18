@@ -37,3 +37,4 @@ ul li a{color: #00aeef;}
 #searchForm{position:absolute;padding-left: 1020px;padding-top: 0;margin-top: 0;}
 #searchForm>.btn{background-color: #00aeef;border-color: #1e2025;display: inline;}
 select{display: block;margin-top: 20px;width: 200px;border-radius: 3px;}
+#sexChoose{color: #fff;padding-left: 50px;letter-spacing: 20px}

@@ -51,11 +51,11 @@
 	<div id="nav">
 		<ul class="nav nav-list">
 			<div class = "profile">
-				<img class="profile" src="images/profile.png" />
+				<a href="#" ng-click="toggleMenu('login')"><img class="profile" src="images/profile.png" /></a>
 			</div>
 			<li><a href="#" ng-click="toggleMenu('main')">大厅</a></li>
 			<li><a href="#" ng-click="toggleMenu('square')">广场</a></li>
-			<li><a href="#" ng-click="toggleMenu('login')">设置</a></li>
+			<li><a href="#" ng-click="toggleMenu('setting')">设置</a></li>
 		</ul>
 	</div><!-- /nav-->
 	<div id="content">
@@ -65,7 +65,9 @@
 		<div ng-include="'login.html'" ng-show="loginShow"></div>
 		<div ng-include="'register.html'" ng-show="registerShow"></div>
 	</div>
+	<script src = "js/jquery-2.1.1.js"></script>
 	<script src= "js/angular.min.js"></script>
+	<script src= "js/bootstrap.min.js"></script>
 </div><!-- /page -->
 </body>
 </html>

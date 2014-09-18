@@ -1,9 +1,18 @@
+var MongoDB = require('../dao/MongoDB');
+var mongoDB = new MongoDB();
+
+
 /**
 *创建房间
 **/
 function toCreateNewRoom(req,res){
-	
-	
+  var Object = {
+         "roomName" : "测试房间",
+         "roomDescription" : "这里是测试房间",
+         "roomDate" : "2014-09-18"
+    };
+  var peopleId = 1;
+  console.log(mongoDB.insertRoom(req, res, peopleId, Object));
 }
 /**
 *加入房间

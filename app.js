@@ -57,7 +57,7 @@ app.get("/toGetInvitation",accountRequestHandlers.toGetInvitation);//获取邀�
 app.get("/toGetUserFile",accountRequestHandlers.toGetUserFile);//获取所拥有文件
 
 //房间请求处理
-app.post("/toCreateNewRoom",roomRequestHandlers.toCreateNewRoom);//创建房间
+app.get("/toCreateNewRoom",roomRequestHandlers.toCreateNewRoom);//创建房间
 app.get("/toJoinRoom",roomRequestHandlers.toJoinRoom);//加入房间
 app.get("/toQuitRoom",roomRequestHandlers.toQuitRoom);//退出房间
 app.get("/toAddFileToRoom",roomRequestHandlers.toAddFileToRoom);//添加资料

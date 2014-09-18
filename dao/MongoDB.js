@@ -34,7 +34,8 @@ function MongoDB(){
     //     peopleAge: 18, 
     //     peopleSex : '男', 
     //     peopleEmail : '495176533@qq.com', 
-    //     peopleTel : '15200801442', 
+    //     peopleTel  : '15200801442', 
+    //     peopleQQ : '495176533',
     //     user : { 
     //         userAccount: 'root', 
     //         userPassword: 'root'}
@@ -472,7 +473,6 @@ function MongoDB(){
             
         });
     }
-
 
 
 

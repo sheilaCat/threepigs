@@ -1,6 +1,0 @@
-
-function indexPage(request,response){
-		 response.sendfile('views/index.html');
-	console.log("进了indexpage");
-}
-exports.indexPage = indexPage;
