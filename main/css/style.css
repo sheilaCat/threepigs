@@ -2,8 +2,6 @@ body{background-color:#1e2025;overflow-x: hidden;}
 #nav{background-color:#363840;width: 237px;height:897px;text-align: center;position: fixed;top: 0px;}
 #content h1{font-family:'黑体';font-size: 35px;color: #919191;font-weight: bold;padding-top: 70px;margin-left: 300px}
 h1>.btn{font-size: 13px;font-family: '宋体';margin-left: 15px;background-color: #00aeef;color:#fff;}
-h1>input{font-size: 13px;font-family: '宋体';color:#fff;}
-h1>input[type=file]{}
 ul li a{color: #00aeef;}
 .login{position: absolute;padding-top:20px;margin-left: 400px;}
 .login>label{color: #fff;}
@@ -27,13 +25,10 @@ ul li a{color: #00aeef;}
 			-ms-transition-duration:1s;
 			-o-transition-duration:1s;}
 .btn{background-color: #363840;border-color: #1e2025}
-.canvas{display:block;background-color: gray;padding-top: 200px;margin-left: 300px;width: 700px;height:500px;border-radius: 10px;}
+.canvas{background-color: gray;padding-top: 200px;margin-left: 300px;width: 700px;height:500px;border-radius: 10px;}
 #files{padding-top:50px;margin-left: 330px;}
 .file{width: 1000px;}
 .container >.container-fluid>.row>.col-lg-3>.file>h1{font-family:'宋体';margin-left:60px;font-size: 15px;color:#fff;font-weight: normal;text-align: left;padding-top: 0px}
 .container >.container-fluid>.row>.col-lg-3>.file>p{font-size: 13px;color:#00aeef;margin-left: 50px;}
 #content>.ng-scope>#files.container-fluid.ng-scope>.row>.col-lg-3>.file>p{font-size: 13px;color:#00aeef;margin-left: 50px;}
 #content>.ng-scope>#files.container-fluid.ng-scope>.row>.col-lg-3>.file>h1{font-family:'宋体';margin-left:60px;font-size: 15px;color:#fff;font-weight: normal;text-align: left;padding-top: 0px}
-#searchForm{position:absolute;padding-left: 1020px;padding-top: 0;margin-top: 0;}
-#searchForm>.btn{background-color: #00aeef;border-color: #1e2025;display: inline;}
-select{display: block;margin-top: 20px;width: 200px;border-radius: 3px;}
