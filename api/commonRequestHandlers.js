@@ -1,5 +1,5 @@
 
 function indexPage(request,response){
-		response.sendfile('views/index.html');
+		 response.sendfile('index.html');
 }
 exports.indexPage = indexPage;

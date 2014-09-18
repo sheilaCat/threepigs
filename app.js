@@ -30,10 +30,10 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-//app.get('/', function(req, res){
+// app.get('/', function(req, res){
 //    res.sendfile('views/index.html');
 //    console.log('index end');
-//});
+// });
 //通用请求
 app.get("/",commonRequestHandlers.indexPage);//获取主页
 //文件请求处理
