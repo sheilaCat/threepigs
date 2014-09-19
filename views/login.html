@@ -6,17 +6,28 @@
 		<div class="canvas">
 		</div>
 		<!--/end rooms -->
-		<form role="form">
+		<form role="form" ng-app="" ng-controller="loginController">
 			<div class="login">
 			<label for="username">用户名：</label>
-			<input type="text" class="form-control" id="username" placeholder="Enter username"/>
+			<input type="text" class="form-control" id="username" ng-model="userAccount" placeholder="Enter username"/>
 			<label for="psd">密码：</label>
-			<input type="password" class="form-control" id="psd" placeholder="Enter Password"/>
-			<button type="submit" class=" btn">登录</button>
-			<label>
-    		  <input type="checkbox"> Remember me </label>
-			 
+			<input type="password" class="form-control" id="psd" ng-model="userPassword" placeholder="Enter Password"/>
+			<button type="button" class=" btn" ng-click="login()">登录</button>
+			
 			<p>没有账号？这里<a href="#" ng-click="toggleMenu('register')">注册</a></p>
 			</div>
-
+		<script type="text/javascript">
+		function loginController($scope, $http){
+			$scope.login = function(){
+				$http.post("/toLogin", {"userAccount" : $scope.userAccount, "userPassword" : $scope.userPassword})
+	  				.success(function(response) {
+	  					if(response != "fail")
+	  						alert(" login success")
+	  					else
+	  						alert("login fail");
+	  					});
+			};
+		}
+			
+		</script>
 		</form>

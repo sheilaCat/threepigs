@@ -31,14 +31,15 @@ function start(request, response) {
 function toUploadFile(request, response) {
   console.log("Request handler 'upload' was called.");
   // console.log("response = " + util.inspect(response,true));
-  // console.log("request = " + util.inspect(request,true));
+  //console.log("request = " + util.inspect(request,true));
   var form = new formidable.IncomingForm();
   console.log("about to parse");
-  form.parse(request, function(error, fields, files) {
+  
+  //form.parse(request, function(error, fields, files) {
     console.log("parsing done");
-    console.log(files.upload.path);
+    console.log(request.files.upload.path);
     // console.log("fields = " + util.inspect(fields,true)); 
-    console.log("files = " + util.inspect(files,true));
+    console.log("files = " + util.inspect(request.files,true));
     //fs.renameSync(files.upload.path, "/tmp/test.png"); 这个会报错，这个应该是linux的路径 
     // files.upload.path = "G:/test.png";
     // fs.write(files.fd,files,files.length,files.upload.path,function(err, bytesRead, buffer) {
@@ -51,16 +52,16 @@ function toUploadFile(request, response) {
     //     console.log("write error = " + err);
     //   }
     // });
-    fs.writeFileSync( "files/test.png", fs.readFileSync(files.upload.path) );
-    fs.unlink(files.upload.path, function (error) {
+    fs.writeFileSync( __dirname + "/../public/files/"+request.files.upload.name, fs.readFileSync(request.files.upload.path) );
+    fs.unlink(request.files.upload.path, function (error) {
       // body...
       if (error) {
         console.log("unlink error : " = error);
       }
     });
-    console.log("files.upload.path = " + files.upload.path);
+    console.log("files.upload.path = " + request.files.upload.path);
     
-    show(response);
+    show(request, response);
 
     // response.writeHead(200, {"Content-Type": "text/html"}); 
     // console.log("body : " + body);
@@ -68,7 +69,7 @@ function toUploadFile(request, response) {
     // response.write("received image:<br/>"); 
     // response.write("<img src='/show' />"); 
     // response.end(); 
-  }); 
+  //}); 
 } 
  
 function show(request, response) { 
@@ -87,7 +88,7 @@ function show(request, response) {
   //     response.end(); 
   //   } 
   // });
-  fs.readdir("files", function (err, files) {
+  fs.readdir(__dirname + "/../public/files/", function (err, files) {
     // body...
     debugger;
     if (err) {
@@ -112,6 +113,7 @@ function show(request, response) {
       response.end();
     }
   });
+  
 
 }
 

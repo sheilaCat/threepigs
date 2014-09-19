@@ -1,6 +1,6 @@
 var MongoDB = require('../dao/MongoDB');
 var mongoDB = new MongoDB();
-
+var async = require('async');
 
 /**
 *创建房间
@@ -63,13 +63,21 @@ function toPassPaint(req,res){
 	
 }
 /**
-*交换画笔
+*获取所有房间
 **/
 function toGetAllRoom(req, res){
 
-	var Object = mongoDB.findAll(req, res, "room");
-	
+	async.series([
+		function(cb){  mongoDB.findAll("room", cb);}
+	], function(err, results) {
+		if(results[0].length == 0)
+			results[0] = null;
+   		res.send(results[0]);
+   		res.end();
+   		return ;
 
+	});
+	return ;
 }
 
 exports.toCreateNewRoom = toCreateNewRoom;

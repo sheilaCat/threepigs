@@ -68,7 +68,10 @@
 		<button type="button" class="btn btn-xs" type="file">打开文件</button>
 		<button type="button" class="btn btn-xs">保存文件</button>
 		<button type="button" class="btn btn-xs">画笔</button>
-   		 <input type="file" id="exampleInputFile">
+		<form action="/toUploadFile" enctype="multipart/form-data" method="post">
+   		 <input type="file" name="upload" id="exampleInputFile" multiple="multiple">
+		<input type="submit" value="Upload file" />
+		</form>
 		</h1>
 
 		<div class="canvas">

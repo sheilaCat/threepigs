@@ -1,8 +1,23 @@
+var MongoDB = require('../dao/MongoDB');
+var mongoDB = new MongoDB();
+var async = require('async');
+
 /**
 *µÇÂ½
 */
 function toLogin(req,res){
-	
+	console.log(req.body);
+	async.series([
+		function(cb){ mongoDB.findPeopleByUser(req.body, cb)}
+	], function(err, results) {
+		console.log(results[0]);
+   		res.send(results[0]);
+   		res.end();
+   		return ;
+	});
+
+
+	return ;
 }
 /**
 *×¢²á

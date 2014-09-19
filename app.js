@@ -1,8 +1,6 @@
 var express = require('express');
 var path = require('path');
 var app = express();
-var server = require("./server/server"); 
-var router = require("./server/route"); 
 var filesRequestHandlers = require("./api/filesRequestHandlers"); 
 var accountRequestHandlers = require("./api/accountRequestHandlers"); 
 var roomRequestHandlers = require("./api/roomRequestHandlers"); 
@@ -71,6 +69,5 @@ app.get("/toGetAllRoom", roomRequestHandlers.toGetAllRoom);//获取所有房间
 
 //启动服务器
 app.listen(3000);
-//server.start(router.route,handle);
  
 console.log('Listening on port 3000');

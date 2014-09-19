@@ -18,12 +18,11 @@ function MongoDB(){
 
 
     //查询指定表所有内容
-    this.findAll = function(req, res, tableName){
+    this.findAll = function(tableName, callback){
          db.collection(tableName).find({}).toArray(function(err, docs) {
                 if (err) throw err;
                 console.log(docs);
-                res.send(docs);
-                res.end();
+                callback(null, docs);
             });
     }
 
@@ -35,12 +34,11 @@ function MongoDB(){
     //     peopleSex : '男', 
     //     peopleEmail : '495176533@qq.com', 
     //     peopleTel  : '15200801442', 
-    //     peopleQQ : '495176533',
     //     user : { 
     //         userAccount: 'root', 
     //         userPassword: 'root'}
     //     }
-    this.insertPeople = function(req, res, Object){
+    this.insertPeople = function(Object){
         var maxPeopleId;
         console.log('userAccount ==>' + Object.user.userAccount.toString());
         db.collection('people').find({ 'user.userAccount' : Object.user.userAccount}).toArray(function(err, docs) {
@@ -81,17 +79,19 @@ function MongoDB(){
     //     userAccount : 'admin' , 
     //     userPassword : 'admin'
     // }
-    this.findPeopleByUser = function(req, res, Object){
+    this.findPeopleByUser = function(Object, callback){
+        var temp;
         db.collection('people').find({ 'user' : Object}).toArray(function(err, docs) {
             if (err) throw err;
             if(docs[0] == null){
                 console.log('userAccount is null');
-                return FAIL;
+
+                callback(null, FAIL);
             }
             else{
                 console.log('userAccount is  not null');
-                console.log(docs);
-                return docs;
+                //console.log(docs);
+                callback(null, docs);
             }
         });
     }
@@ -106,7 +106,7 @@ function MongoDB(){
         // "fileLocation" : "???",
         // "fileTimes" : 0
   //   };
-    this.uploadFile = function(req, res, peopleId, Object){
+    this.uploadFile = function(peopleId, Object){
 
         db.collection('index').find({}).toArray(function(err, docs) {           
             maxFileId = docs[0].fileId;
@@ -144,7 +144,7 @@ function MongoDB(){
     //   'commentDate' : '2014-09-15',
     //   'commentContent' : '资料不错'
     // };
-    this.insertComment = function(req, res, Object, peopleId, fileId){
+    this.insertComment = function(Object, peopleId, fileId){
         db.collection('index').find({}).toArray(function(err, docs) {           
             maxCommentId = docs[0].commentId;
             Object.commentId = maxCommentId + 1;
@@ -249,7 +249,7 @@ function MongoDB(){
    //      "fileDescription" : "超好用的高数资料",
    //      "downloadDate" : "2014-09-15"
    // };
-    this.insertDownloadFile = function(req, res, peopleId, Object){
+    this.insertDownloadFile = function(peopleId, Object){
         db.collection('people').find({'peopleId' : peopleId}).toArray(function(err, docs) {
             if (err) throw err;
             if( docs[0].downloadFileList == null ){
@@ -274,7 +274,7 @@ function MongoDB(){
 
 
     //修改密码信息
-    this.modifyUser = function(req, res, peopleId, userPassword){
+    this.modifyUser = function(peopleId, userPassword){
         db.collection('people').find({'peopleId' : peopleId}, {"user" : 1}).toArray(function(err, docs) {
             if (err) throw err;
             docs[0].user.userPassword = userPassword;
@@ -295,7 +295,7 @@ function MongoDB(){
     //     "roomDescription" : "这里是高数重修学习的房间",
     //     "roomDate" : "2014-09-15"
     // };
-    this.insertRoom = function(req, res, peopleId, Object){
+    this.insertRoom = function(peopleId, Object){
         var maxRoomId;
         db.collection('index').find({},{'roomId' : 1}).toArray(function(err, docs) { 
             console.log(docs);
@@ -319,8 +319,8 @@ function MongoDB(){
         });
     }
 
-
-    this.addRoom = function(req, res, peopleId, roomId){
+    //用户加入房间
+    this.addRoom = function(peopleId, roomId){
 
 
         db.collection('room').find({'roomId' : roomId}).toArray(function(err, docs) {
@@ -340,8 +340,8 @@ function MongoDB(){
         });
     }
 
-
-    this.outRoom = function(req, res, peopleId, roomId){
+    //用户退出房间,当房间没人时， 该房间被删除
+    this.outRoom = function(peopleId, roomId){
 
         db.collection('room').find({'roomId' : roomId}).toArray(function(err, docs) {
             if (err) throw err;
@@ -386,7 +386,7 @@ function MongoDB(){
     //   "promptDate" : "2014-09-15"
     
     // };
-    this.sendCompt = function(req, res, sendPeopleId, getPeopleId, Object){
+    this.sendCompt = function(sendPeopleId, getPeopleId, Object){
         var maxComptId;
         db.collection('index').find({},{'comptId' : 1}).toArray(function(err, docs) { 
             console.log(docs);
@@ -463,7 +463,7 @@ function MongoDB(){
 
 
     //获取用户所有通知信息
-    this.getAllCompt = function(req, res, peopleId){
+    this.getAllCompt = function(peopleId){
         db.collection('people').find({'peopleId' : peopleId}, {'getPromptList' : 1}).toArray(function(err, docs) {
             if (err) throw err;
             
@@ -471,6 +471,22 @@ function MongoDB(){
 
             return docs
             
+        });
+    }
+
+
+    //根据文件类型获取响应文件列表
+
+    this.findFileByType = function (fileType){
+        db.collection('people').find({'uploadFileList.fileType' : fileType}, {'uploadFileList' : 1}).toArray(function(err, docs){
+            if(err) throw err;
+            var temp = [];
+            for( i in docs){
+            	for( j in docs[i].uploadFileList){
+            		temp.push(docs[i].uploadFileList[j]);
+            	}
+            }
+            return temp;
         });
     }
 
