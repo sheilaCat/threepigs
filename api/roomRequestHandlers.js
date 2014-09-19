@@ -6,13 +6,26 @@ var async = require('async');
 *创建房间
 **/
 function toCreateNewRoom(req,res){
-  var Object = {
+	console.log('begin');
+  	var Object = {
          "roomName" : "测试房间",
          "roomDescription" : "这里是测试房间",
          "roomDate" : "2014-09-18"
     };
-  var peopleId = 1;
-  console.log(mongoDB.insertRoom(req, res, peopleId, Object));
+	var peopleId = 1;
+	async.series([
+			function(cb){ mongoDB.insertRoom(peopleId, Object, cb) },
+			function(cb){ mongoDB.findAll("room", cb); }
+		], function(err, results) {
+			if(results[1].length == 0)
+				results[1] = null;
+	   		res.send(results[1]);
+	   		console.log(results[1]);
+	   		res.end();
+	   		return ;
+
+	});
+	return ;
 }
 /**
 *加入房间

@@ -1,21 +1,58 @@
-		<h1>大厅<button type="button" class="btn btn-xs" onclick="location.href='toCreateNewRoom'">建立新房间</button></h1>
+<div ng-app="" ng-controller="roomController">
+		<h1>大厅
 
-		<div class="rooms" ng-app=""  ng-controller="roomController">
-		<script type="text/javascript">
-			function roomController($scope, $http){
-				$http.get("/toGetAllRoom")
-	  				.success(function(response) {$scope.roomList = response;});
-			}
-		</script>
-		<div class="btn-group-vertical">
+<!-- Button trigger modal -->
+<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForRoom">
+	新建房间
+</button>
 
-			<button type="button" class="btn" ng-click="toggleMenu('room')"  ng-repeat="room in roomList"> 
-				<div class="room">
-				<h5>{{ room.roomName }}</h5><h6>{{ room.roomId }}</h6>
-				<p>{{ room.roomDescription }}</p>
-				</div>
-			</button>
+<!-- Modal -->
+<div class="modal fade" id="myModalForRoom" tabindex="-1" role="dialog" aria-labelledby="myModalLabelForRoom" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabelForRoom">新建房间</h4>
+      </div>
+      <div class="modal-body">
+      	<input type="text" class="form-control" id="roomName" placeholder="输入房间名"/>
+      	
+      	<input type="text" class="form-control" id="roomDescription" placeholder="请输入房间描述"/>
 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</h1>
+			<div class="rooms">
+			<script type="text/javascript">
+				function roomController($scope, $http){
+					$http.get("/toGetAllRoom")
+		  				.success(function(response) {$scope.roomList = response;});
+
+
+		  			$scope.toCreateNewRoom = function(){
+		  				$http.get("/toCreateNewRoom")
+		  					.success(function(response) {$scope.roomList = response;});
+		  			}
+				}
+			</script>
+			<div class="btn-group-vertical">
+
+				<button type="button" class="btn" ng-click="toggleMenu('room')"  ng-repeat="room in roomList"> 
+					<div class="room">
+					<h5>{{ room.roomName }}</h5><h6>{{ room.roomId }}</h6>
+					<p>{{ room.roomDescription }}</p>
+					</div>
+				</button>
+
+			</div>
+			</div>
 		</div>
 		</div>
 		<!--/end rooms -->

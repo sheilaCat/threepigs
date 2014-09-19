@@ -5,6 +5,12 @@ var filesRequestHandlers = require("./api/filesRequestHandlers");
 var accountRequestHandlers = require("./api/accountRequestHandlers"); 
 var roomRequestHandlers = require("./api/roomRequestHandlers"); 
 var commonRequestHandlers = require("./api/commonRequestHandlers"); 
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+
+
+app.use(cookieParser());
+app.use(session({secret: 'keyboard cat'}));
 
 app.use(function(req, res, next){
 	//router.route(handle,req,res);

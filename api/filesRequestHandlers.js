@@ -2,7 +2,11 @@ var querystring = require("querystring"),
     fs = require("fs"),
     path = require("path"),
     formidable = require("formidable");
-var pdfutils = require('pdfutils').pdfutils;
+try {
+  var pdfutils = require('pdfutils').pdfutils;
+} catch (error) {
+  console.log("require pdfutils error: " + error);
+}
 var util = require('util');  
 var body = '';
  

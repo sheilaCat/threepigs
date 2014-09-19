@@ -19,10 +19,14 @@
 		<script type="text/javascript">
 		function loginController($scope, $http){
 			$scope.login = function(){
+
 				$http.post("/toLogin", {"userAccount" : $scope.userAccount, "userPassword" : $scope.userPassword})
 	  				.success(function(response) {
-	  					if(response != "fail")
-	  						alert(" login success")
+	  					if(response != "fail"){
+	  						alert(" login success");
+	  						$scope.toggleMenu('main');
+	  					}
+
 	  					else
 	  						alert("login fail");
 	  					});

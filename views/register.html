@@ -5,26 +5,98 @@
 
 		<div class="canvas">
 		</div>
+	
 		<!--/end rooms -->
+		<div ng-app="" ng-controller="registerController">
 		<form role="form">
 			<div class="login">
 			<label for="username">用户名：</label>
-			<input type="text" class="form-control" id="username" placeholder="Enter username"/>
+			<input type="text" class="form-control" name="username" ng-model="user.Account" placeholder="Enter username"/>
 			<label for="psd">密码：</label>
-			<input type="password" class="form-control" id="psd" placeholder="Enter Password"/>
+			<input type="password" class="form-control" name="psd" ng-model="user.Password" placeholder="Enter Password"/>
 			<label for="psd">确认密码：</label>
-			<input type="password" class="form-control" id="re-psd" placeholder="Confirm Password"/>
+			<input type="password" class="form-control" name="re-psd" ng-model="repeatPassword" placeholder="Confirm Password"/>
 			<label for="name">姓名：</label>
-			<input type="text" class="form-control" id="name" placeholder="Enter name"/>
+			<input type="text" class="form-control" name="name" ng-model="user.Name" placeholder="Enter name"/>
 			<label for="age">年龄：</label>
-			<input type="text" class="form-control" id="age" placeholder="Confirm age"/>
+			<input type="text" class="form-control" name="age" ng-model="user.Age" placeholder="Confirm age"/>
 			<label for="sex">性别：</label>
 			<div class="input-group" id="sexChoose">
-			<input type="radio" name="sex">男</input><input type="radio" name="sex">女</input></div>
+			<input type="radio" name="sex" ng-model="user.Sex" checked="checked" value="male">男</input>
+			<input type="radio" name="sex" ng-model="user.Sex" value="female">女</input>
+			</div>
 			<label for="email">邮箱：</label>
-			<input type="text" class="form-control" id="age" placeholder="xxx@xxx.xxx"/>
-			<button type="button" class=" btn">注册</button>
+			<input type="email" class="form-control" ng-model="user.Email" name="email" placeholder="xxx@xxx.xxx"/>
+			<label for="tel">电话号码：</label>
+			<input type="text" class="form-control" ng-model="user.Tel" name="tel" placeholder="Confirm tel number"/>
+			<button type="button" class=" btn"  ng-disabled="incomplete ||error" ng-click="register()">注册</button>
 			
 			</div>
-
+		<script type="text/javascript">
+		function registerController($scope, $http){
+			$scope.incomplete = true;
+			$scope.error = true;
+			$scope.$watch('user.Account',function() {$scope.test();});
+			$scope.$watch('user.Password',function() {$scope.test();});
+			$scope.$watch('repeatPassword',function() {$scope.test();});
+			$scope.$watch('user.Name',function() {$scope.test();});
+			$scope.$watch('user.Age',function() {$scope.test();});
+			$scope.$watch('user.Sex',function() {$scope.test();});
+			$scope.$watch('user.Email',function() {$scope.test();});
+			
+			//{
+			//  peopleName: name, 
+			//  peopleAge: age, 
+			//  peopleSex : sex, 
+			//  peopleEmail : email, 
+			//  peopleTel  : tel, 
+			//  user : { 
+			//       userAccount: account, 
+			//       userPassword: psd
+			//       }
+			//   }
+			$scope.register = function(){
+					$http.post("/toRegister", {"peopleName" :  $scope.user.Name, 
+					"peopleAge"  :$scope.user.Age,
+					"peopleSex"  :  $scope.user.Sex,
+					"peopleEmail":  $scope.user.Email,
+					"peopleTel"  :  $scope.user.Tel,
+					"user" :{ 
+					"userAccount": $scope.user.Account, 
+					"userPassword": $scope.user.Password
+				}
+			}).success(function(response) {
+				if(response != "fail")
+					alert(" Register success")
+				else
+					alert("Register fail");
+				});
+	  		//var inf = "ID="+$scope.user.Account+"psw="+$scope.user.Password+"name="+$scope.user.Name+"age="+$scope.user.Age+"Email="+$scope.user.Email;
+	  		//alert(inf);
+			};
+			$scope.test=function() {
+				//alert("im:"+$scope.incomplete+"err:"+$scope.error);
+				 if ($scope.user.Password !== $scope.repeatPassword) {
+							$scope.error = true;
+    			} 
+    			else {
+    						$scope.error = false;
+  				}
+  				
+  				if (!$scope.user.Account.length ||
+  						!$scope.user.Password.length ||
+  						!$scope.repeatPassword.length ||
+  						!$scope.user.Name.length||
+  						!$scope.user.Age.length ||
+  						!$scope.user.Email.length) {
+       								$scope.incomplete = true;
+  						}
+  						else{
+  							$scope.incomplete = false;
+  						}
+			}
+		}
+			
+		</script>
+	</div>
 		</form>

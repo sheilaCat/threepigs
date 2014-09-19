@@ -295,7 +295,7 @@ function MongoDB(){
     //     "roomDescription" : "这里是高数重修学习的房间",
     //     "roomDate" : "2014-09-15"
     // };
-    this.insertRoom = function(peopleId, Object){
+    this.insertRoom = function(peopleId, Object, callback){
         var maxRoomId;
         db.collection('index').find({},{'roomId' : 1}).toArray(function(err, docs) { 
             console.log(docs);
@@ -314,8 +314,7 @@ function MongoDB(){
                 if (err) throw err;
                 console.log('roomId add===>' + SUCCESS);                        
             });
-
-            return SUCCESS;
+            callback(null, SUCCESS);
         });
     }
 

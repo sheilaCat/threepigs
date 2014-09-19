@@ -38,3 +38,12 @@ ul li a{color: #00aeef;}
 #searchForm>.btn{background-color: #00aeef;border-color: #1e2025;display: inline;}
 select{display: block;margin-top: 20px;width: 200px;border-radius: 3px;}
 #sexChoose{color: #fff;padding-left: 50px;letter-spacing: 20px}
+.classify>ul li{font-size: 15px;font-weight: normal;list-style: none;font-family:'宋体'}
+.classify{position:absolute;width: 200px;}
+.searchRes{position: absolute;margin-left: 140px;}
+.searchRes>ul{height: 105px;overflow-y: scroll;padding-right: 180px}
+.searchRes>ul li{font-size: 16px;font-weight: normal;list-style: none;width: 200px;font-family:'宋体'}
+.modal-body{height: 120px;}
+.modal-footer>.btn,h4#myModalLabel,input#search{font-family: '宋体'}
+.modal-body input{font-family: '宋体';margin-top: 10px;}
+.modal-header h4{font-family: '宋体';font-size: 15px}

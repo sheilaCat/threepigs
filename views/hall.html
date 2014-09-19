@@ -6,41 +6,36 @@
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <script src = "js/jquery-2.1.1.js"></script>
 <script type="text/javascript">
+	function shutAllPages($scope){
+		$scope.mainShow=false;
+		$scope.squareShow=false;
+		$scope.roomShow=false;
+		$scope.loginShow=false;
+		$scope.registerShow=false;
+		$scope.settingShow=false;
+	}
 	function MenuController($scope){
 			$scope.mainShow=true;
  	$scope.toggleMenu = function($where){
-
 			if($where == 'main'){
+				shutAllPages($scope);
 				$scope.mainShow=true;
-				$scope.squareShow=false;
-				$scope.roomShow=false;
-				$scope.loginShow=false;
-				$scope.registerShow=false;
 			}else if($where == 'square'){
-				$scope.mainShow=false;
-				$scope.roomShow=false;
+				shutAllPages($scope);
 				$scope.squareShow=true;
-				$scope.loginShow=false;
-				$scope.registerShow=false;
 			}else if($where =='room'){
-				$scope.mainShow=false;
+				shutAllPages($scope);
 				$scope.roomShow=true;
-				$scope.squareShow=false;
-				$scope.loginShow=false;
-				$scope.registerShow=false;
 			}else if($where == 'login'){
-				$scope.mainShow=false;
-				$scope.roomShow=false;
-				$scope.squareShow=false;
+				shutAllPages($scope);
 				$scope.loginShow=true;
-				$scope.registerShow=false;
 			}else if($where == 'register'){
-				$scope.mainShow=false;
-				$scope.roomShow=false;
-				$scope.squareShow=false;
-				$scope.loginShow=false;
+				shutAllPages($scope);
 				$scope.registerShow=true;
-			}else{}
+			}else{
+				shutAllPages($scope);
+				$scope.settingShow=true;
+			}
 
 		}
 	}
@@ -64,6 +59,7 @@
 		<div ng-include="'room.html'" ng-show="roomShow"></div>
 		<div ng-include="'login.html'" ng-show="loginShow"></div>
 		<div ng-include="'register.html'" ng-show="registerShow"></div>
+		<div ng-include="'setting.html'" ng-show="settingShow"></div>
 	</div>
 	<script src = "js/jquery-2.1.1.js"></script>
 	<script src= "js/angular.min.js"></script>
