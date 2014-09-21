@@ -14,10 +14,9 @@ function toLogin(req,res){
    		req.session.people = {};
    		req.session.people = results[0][0];
    		console.log(req.session.people.peopleName);
-   		res.end();
+   		console.log(req.session);
    		return ;
 	});
-
 	console.log("end");
 	return ;
 }
@@ -31,7 +30,6 @@ function toRegister(req,res){
 	], function(err, results) {
 		console.log(results[0]);
    		res.send(results[0]);
-   		res.end();
    		return ;
 	});
 	//res.writeHead(200, {"Content-Type": "text/html"}); 

@@ -6,25 +6,36 @@ var async = require('async');
 *创建房间
 **/
 function toCreateNewRoom(req,res){
-	console.log('begin');
-  	var Object = {
-         "roomName" : "测试房间",
-         "roomDescription" : "这里是测试房间",
-         "roomDate" : "2014-09-18"
-    };
-	var peopleId = 1;
-	async.series([
-			function(cb){ mongoDB.insertRoom(peopleId, Object, cb) },
+	// onsole.log('begin');
+  	// var Object = {
+   //       "roomName" : "测试房间",
+   //       "roomDescription" : "这里是测试房间",
+   //       "roomDate" : "2014-09-18"
+   //  };
+   	var date = new Date();
+	console.log(req.body);
+	req.body.roomDate = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+	if( req.session.people == null ){
+	 	console.log('not people');
+	 	res.send('fail');
+	}
+		
+	else{
+		console.log(req.session.people.peopleId);
+		async.series([
+			function(cb){ mongoDB.insertRoom(req.session.people.peopleId, req.body, cb) },
 			function(cb){ mongoDB.findAll("room", cb); }
 		], function(err, results) {
 			if(results[1].length == 0)
 				results[1] = null;
 	   		res.send(results[1]);
 	   		console.log(results[1]);
-	   		res.end();
 	   		return ;
 
-	});
+		});
+	}
+	
+	
 	return ;
 }
 /**
@@ -86,7 +97,6 @@ function toGetAllRoom(req, res){
 		if(results[0].length == 0)
 			results[0] = null;
    		res.send(results[0]);
-   		res.end();
    		return ;
 
 	});

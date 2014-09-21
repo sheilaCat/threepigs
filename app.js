@@ -6,17 +6,16 @@ var accountRequestHandlers = require("./api/accountRequestHandlers");
 var roomRequestHandlers = require("./api/roomRequestHandlers"); 
 var commonRequestHandlers = require("./api/commonRequestHandlers"); 
 var session = require('express-session');
-var cookieParser = require('cookie-parser');
 
 
-app.use(cookieParser());
-app.use(session({secret: 'keyboard cat'}));
+
 
 app.use(function(req, res, next){
 	//router.route(handle,req,res);
   //console.log('%s %s', req.method, req.url);
   next();
 });
+
 
 //express基本配置
 app.configure(function(){
@@ -28,12 +27,16 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.static(path.join(__dirname, 'views')));
+  
 });
 
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
+
+  app.use(express.cookieParser('sctalk admin manager'));
+  app.use(express.session());
 // app.get('/', function(req, res){
 //    res.sendfile('views/index.html');
 //    console.log('index end');
@@ -61,7 +64,7 @@ app.get("/toGetInvitation",accountRequestHandlers.toGetInvitation);//获取邀�
 app.get("/toGetUserFile",accountRequestHandlers.toGetUserFile);//获取所拥有文件
 
 //房间请求处理
-app.get("/toCreateNewRoom",roomRequestHandlers.toCreateNewRoom);//创建房间
+app.post("/toCreateNewRoom",roomRequestHandlers.toCreateNewRoom);//创建房间
 app.get("/toJoinRoom",roomRequestHandlers.toJoinRoom);//加入房间
 app.get("/toQuitRoom",roomRequestHandlers.toQuitRoom);//退出房间
 app.get("/toAddFileToRoom",roomRequestHandlers.toAddFileToRoom);//添加资料

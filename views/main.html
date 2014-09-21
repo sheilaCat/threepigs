@@ -15,14 +15,14 @@
         <h4 class="modal-title" id="myModalLabelForRoom">新建房间</h4>
       </div>
       <div class="modal-body">
-      	<input type="text" class="form-control" id="roomName" placeholder="输入房间名"/>
+      	<input type="text" class="form-control" id="roomName" placeholder="输入房间名" ng-model="roomName"/>
       	
-      	<input type="text" class="form-control" id="roomDescription" placeholder="请输入房间描述"/>
+      	<input type="text" class="form-control" id="roomDescription" placeholder="请输入房间描述" ng-model="roomDescription"/>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary">确定</button>
+        <button type="button" class="btn btn-primary" ng-click="toCreateNewRoom()" data-dismiss="modal">确定</button>
       </div>
     </div>
   </div>
@@ -37,8 +37,18 @@
 
 
 		  			$scope.toCreateNewRoom = function(){
-		  				$http.get("/toCreateNewRoom")
-		  					.success(function(response) {$scope.roomList = response;});
+		  				$http.post("/toCreateNewRoom",{"roomName" : $scope.roomName, "roomDescription" : $scope.roomDescription})
+		  					.success(function(response) {
+		  						if(response != "fail"){
+		  							$scope.roomList = response;
+		  						}
+		  						else{
+
+		  							$scope.toggleMenu('login');
+		  						}
+		  						return ;
+		  					});
+		  					return ;
 		  			}
 				}
 			</script>
