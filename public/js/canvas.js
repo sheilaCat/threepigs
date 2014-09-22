@@ -1,0 +1,3 @@
+﻿(function(){
+	paint.init();
+})();

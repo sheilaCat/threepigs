@@ -15,7 +15,7 @@ function toCreateNewRoom(req,res){
    	var date = new Date();
 	console.log(req.body);
 	req.body.roomDate = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
-	if( req.session.people == null ){
+	if ( req.session.people == null ) {
 	 	console.log('not people');
 	 	res.send('fail');
 	}
@@ -41,55 +41,55 @@ function toCreateNewRoom(req,res){
 /**
 *加入房间
 **/
-function toJoinRoom(req,res){
+function toJoinRoom(req,res) {
 	
 	
 }
 /**
 *退出房间
 **/
-function toQuitRoom(req,res){
+function toQuitRoom(req,res) {
 	
 	
 }
 /**
 *添加资料
 **/
-function toAddFileToRoom(req,res){
+function toAddFileToRoom(req,res) {
 	
 	
 }
 /**
 *删除资料
 **/
-function toDeleteFileFromRoom(req,res){
+function toDeleteFileFromRoom(req,res) {
 	
 	
 }/**
 *展示资料
 **/
-function toShowFile(req,res){
+function toShowFile(req,res) {
 	
 	
 }
 /**
 *发起语音
 **/
-function toStartVoice(req,res){
+function toStartVoice(req,res) {
 	
 	
 }
 /**
 *交换画笔
 **/
-function toPassPaint(req,res){
+function toPassPaint(req,res) {
 	
 	
 }
 /**
 *获取所有房间
 **/
-function toGetAllRoom(req, res){
+function toGetAllRoom(req, res) {
 
 	async.series([
 		function(cb){  mongoDB.findAll("room", cb);}

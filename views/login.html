@@ -6,7 +6,7 @@
 		<div class="canvas">
 		</div>
 		<!--/end rooms -->
-		<form role="form" ng-app="" ng-controller="loginController">
+		<form role="form" ng-controller="loginController">
 			<div class="login">
 			<label for="username">用户名：</label>
 			<input type="text" class="form-control" id="username" ng-model="userAccount" placeholder="Enter username"/>
@@ -24,8 +24,8 @@
 	  				.success(function(response) {
 	  					if(response != "fail"){
 	  						$scope.toggleMenu('main');
+							connection();
 	  					}
-
 	  					else
 	  						alert("login fail");
 	  					});

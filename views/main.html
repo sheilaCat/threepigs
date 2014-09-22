@@ -1,4 +1,4 @@
-<div ng-app="" ng-controller="roomController">
+<div  ng-controller="roomController">
 		<h1>大厅
 
 <!-- Button trigger modal -->
@@ -41,9 +41,15 @@
 		  					.success(function(response) {
 		  						if(response != "fail"){
 		  							$scope.roomList = response;
+									var obj = {
+										author:'System',
+										type:'creatRoom',
+										msg:'创建了一个房间'
+									};
+									alert("创建了一个房间");
+									socket.emit("message",obj);
 		  						}
 		  						else{
-
 		  							$scope.toggleMenu('login');
 		  						}
 		  						return ;

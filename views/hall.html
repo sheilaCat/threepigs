@@ -4,8 +4,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/canvas.css">
+<script src="js/paint.js"></script>
 <script src = "js/jquery-2.1.1.js"></script>
+<script src = "js/angular.min.js"></script>
+<script src = "js/connection.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
+	var session = window.sessionStorage;
 	function shutAllPages($scope){
 		$scope.mainShow=false;
 		$scope.squareShow=false;
@@ -61,9 +67,7 @@
 		<div ng-include="'register.html'" ng-show="registerShow"></div>
 		<div ng-include="'setting.html'" ng-show="settingShow"></div>
 	</div>
-	<script src = "js/jquery-2.1.1.js"></script>
-	<script src= "js/angular.min.js"></script>
-	<script src= "js/bootstrap.min.js"></script>
+	<script src = "js/bootstrap.min.js"></script>
 </div><!-- /page -->
 </body>
 </html>
