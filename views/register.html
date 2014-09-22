@@ -55,45 +55,51 @@
 			//       userPassword: psd
 			//       }
 			//   }
-			$scope.register = function(){
-					$http.post("/toRegister", {"peopleName" :  $scope.user.Name, 
-					"peopleAge"  :$scope.user.Age,
-					"peopleSex"  :  $scope.user.Sex,
-					"peopleEmail":  $scope.user.Email,
-					"peopleTel"  :  $scope.user.Tel,
-					"user" :{ 
-					"userAccount": $scope.user.Account, 
-					"userPassword": $scope.user.Password
-				}
-			}).success(function(response) {
-				if(response != "fail")
-					alert(" Register success")
-				else
-					alert("Register fail");
-				});
+			$scope.register = function() {
+					$http.post("/toRegister", 
+						{
+							"peopleName" :  $scope.user.Name, 
+							"peopleAge"  :$scope.user.Age,
+							"peopleSex"  :  $scope.user.Sex,
+							"peopleEmail":  $scope.user.Email,
+							"peopleTel"  :  $scope.user.Tel,
+							"user" :
+							{ 
+								"userAccount": $scope.user.Account, 
+								"userPassword": $scope.user.Password
+							}
+						}
+					).success(function(response) {
+						if(response != "fail") {
+							alert("Register success");
+							$scope.toggleMenu('login');
+						}
+						else
+							alert("Register fail");
+					});
 	  		//var inf = "ID="+$scope.user.Account+"psw="+$scope.user.Password+"name="+$scope.user.Name+"age="+$scope.user.Age+"Email="+$scope.user.Email;
 	  		//alert(inf);
 			};
-			$scope.test=function() {
+			$scope.test = function() {
 				//alert("im:"+$scope.incomplete+"err:"+$scope.error);
-				 if ($scope.user.Password !== $scope.repeatPassword) {
-							$scope.error = true;
-    			} 
-    			else {
-    						$scope.error = false;
+				 if ($scope.user.Password != $scope.repeatPassword) {
+					$scope.error = true;
+    				} 
+    				else {
+    					$scope.error = false;
   				}
-  				
   				if (!$scope.user.Account.length ||
-  						!$scope.user.Password.length ||
-  						!$scope.repeatPassword.length ||
-  						!$scope.user.Name.length||
-  						!$scope.user.Age.length ||
-  						!$scope.user.Email.length) {
-       								$scope.incomplete = true;
-  						}
-  						else{
-  							$scope.incomplete = false;
-  						}
+  					!$scope.user.Password.length ||
+  					!$scope.repeatPassword.length ||
+  					!$scope.user.Name.length||
+  					!$scope.user.Age.length ||
+  					!$scope.user.Email.length) {
+
+       					$scope.incomplete = true;
+  				}
+  				else{
+  					$scope.incomplete = false;
+  				}
 			}
 		}
 			

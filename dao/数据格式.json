@@ -112,11 +112,11 @@
 
 
 {
-	"peopleId" : 2,
-	"fileId" : 2,
-	"commentId" : 1,
-	"roomId" : 1,
-	''
+	"peopleId" : 0,
+	"fileId" : 0,
+	"commentId" : 0,
+	"roomId" : 0,
+	"promptId" : 0
 
 }
 

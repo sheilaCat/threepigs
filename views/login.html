@@ -23,7 +23,6 @@
 				$http.post("/toLogin", {"userAccount" : $scope.userAccount, "userPassword" : $scope.userPassword})
 	  				.success(function(response) {
 	  					if(response != "fail"){
-	  						alert(" login success");
 	  						$scope.toggleMenu('main');
 	  					}
 

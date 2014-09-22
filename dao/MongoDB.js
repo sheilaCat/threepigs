@@ -38,7 +38,7 @@ function MongoDB(){
     //         userAccount: 'root', 
     //         userPassword: 'root'}
     //     }
-    this.insertPeople = function(Object){
+    this.insertPeople = function(Object, callback){
         var maxPeopleId;
         console.log('userAccount ==>' + Object.user.userAccount.toString());
         db.collection('people').find({ 'user.userAccount' : Object.user.userAccount}).toArray(function(err, docs) {
@@ -63,12 +63,12 @@ function MongoDB(){
                         if (err) throw err;
                         console.log('index add ===>' + SUCCESS);                        
                     });
-                    return SUCCESS;
+		    callback(null, SUCCESS);
                 });
             }
             else{
                 console.log('userAccount is not null');
-                return FAIL;
+		callback(null, FAIL);
             }
         });
     }

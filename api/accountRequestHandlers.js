@@ -24,17 +24,20 @@ function toLogin(req,res){
 *зЂВс
 */
 function toRegister(req,res){
-	console.log(req.body);
+	console.log("req.body :"+req.body);
 	async.series([
 		function(cb){ mongoDB.insertPeople(req.body,cb)}
 	], function(err, results) {
-		console.log(results[0]);
-   		res.send(results[0]);
+		console.log("toRegister results : "+results[0]);
+		res.send(results[0]);
+		//if (results[0] == mongoDB.SUCCESS) {
+		//	res.
+		//}
    		return ;
 	});
 	//res.writeHead(200, {"Content-Type": "text/html"}); 
-  //res.write("ok"); 
-  //res.end(); 
+  	//res.write("ok"); 
+  	//res.end(); 
 	return ;
 	
 }
