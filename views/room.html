@@ -4,7 +4,7 @@
 
 
 <!-- Button trigger modal -->
-<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal">
  打开在线文件
 </button>
 
@@ -36,20 +36,6 @@
       	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
       	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
       	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-
-      	 	<!--
-      	 	<li><a href="">编译原理PDF</a></li>
-      	 	<li><a href="">计算机网络答案</a></li>
-      	 	<li><a href="">计算机网络书本</a></li>
-      	 	<li><a href="">编译原理PDF</a></li>
-      	 	<li><a href="">计算机网络答案</a></li>
-      	 	<li><a href="">计算机网络书本</a></li>
-      	 	<li><a href="">编译原理PDF</a></li>
-      	 	<li><a href="">计算机网络答案</a></li>
-      	 	<li><a href="">计算机网络书本</a></li>
-      	 	<li><a href="">编译原理PDF</a></li>
-      	 	<li><a href="">计算机网络答案</a></li>
-      	 	<li><a href="">计算机网络书本</a></li>-->
       	 	</ul>
 
       	 </div>
@@ -62,16 +48,13 @@
   </div>
 </div>
 
-
-
-
-		<button type="button" class="btn btn-xs" type="file">打开文件</button>
-		<button type="button" class="btn btn-xs">保存文件</button>
-		<button type="button" class="btn btn-xs">画笔</button>
+		<button type="button" class="btn btn-xs" type="file">打开本地文件</button>
+<div class="openFile">
 		<form action="/toUploadFile" enctype="multipart/form-data" method="post">
-   		 <input type="file" name="upload" id="exampleInputFile" multiple="multiple">
-		<input type="submit" value="Upload file" />
+       <input type="file" name="upload" id="exampleInputFile" multiple="multiple">
+       <button type="submit" id="uploadFile" value="Upload File" name="upload" class="btn btn-xs"><label>查看文件</label></button>
 		</form>
+</div>
 		</h1>
 
 		<div ng-include="'canvas.html'"></div>

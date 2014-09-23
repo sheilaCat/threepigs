@@ -17,9 +17,9 @@ ul li a{color: #00aeef;}
 .nav>li>a:hover{color:#fff;}
 .profile{padding-top: 40px;padding-bottom: 50px;}
 .rooms{position: absolute;margin-left: 300px;padding-top: 30px}
-.btn>.room>h5,h6{color: #969696;font-size: 12px;display: inline;margin-right: 20px;margin-left: 20px;}
+.btn>.room>h5,h6{color: #969696;font-size: 12px;margin-right: 20px;margin-left: 20px;line-height: 0px;}
 .btn>.room>h5{text-align: left;}
-.btn>.room>h6{text-align: right;margin-left: 200px;}
+.btn>.room>h6{text-align: right;margin-left: 500px;}
 .btn>.room>p{color: #fff;text-align: left;margin-left: 20px;}
 .btn-group-vertical>.btn:focus,.btn:hover{background-color: #5a5a5a;
 			-webkit-transition-duration:1s;
@@ -47,3 +47,12 @@ select{display: block;margin-top: 20px;width: 200px;border-radius: 3px;}
 .modal-footer>.btn,h4#myModalLabel,input#search{font-family: '宋体'}
 .modal-body input{font-family: '宋体';margin-top: 10px;}
 .modal-header h4{font-family: '宋体';font-size: 15px}
+#exampleInputFile{font-size: 13px;font-family: '宋体';margin-left: 15px;color:#fff;}
+.openFile{position: absolute;margin-left: 750px;}
+#uploadFile{background-color: #00aeef;color:#fff;margin-left: 15px;}
+#uploadFile:focus,#uploadFile:hover{background-color: gray;color:#000;			
+			-webkit-transition-duration:1s;
+			-moz-transition-duration:1s;
+			-ms-transition-duration:1s;
+			-o-transition-duration:1s;}
+#uploadFile label{font-size: 12px;font-weight: 0;font-family: '宋体';}

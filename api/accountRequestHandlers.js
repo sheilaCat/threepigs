@@ -11,10 +11,6 @@ function toLogin(req,res){
 	], function(err, results) {
 		console.log(results[0][0]);
    		res.send(results[0]);
-   		req.session.people = {};
-   		req.session.people = results[0][0];
-   		console.log(req.session.people.peopleName);
-   		console.log(req.session);
    		return ;
 	});
 	console.log("end");

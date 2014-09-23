@@ -24,12 +24,21 @@
 	  				.success(function(response) {
 	  					if(response != "fail"){
 	  						$scope.toggleMenu('main');
+	  						session.people = JSON.stringify(response[0]);
+	  						console.log(session);
 							connection();
+							var obj = {
+								author: response[0].peopleName,
+								type:'login',
+								msg: response[0].peopleName + ' 登录了'
+							};
+							console.log(obj);
+							socket.emit("message",obj);
 	  					}
 	  					else
 	  						alert("login fail");
 	  					});
-			};
+				};
 		}
 			
 		</script>

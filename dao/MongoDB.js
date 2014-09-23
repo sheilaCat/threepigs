@@ -21,7 +21,7 @@ function MongoDB(){
     this.findAll = function(tableName, callback){
          db.collection(tableName).find({}).toArray(function(err, docs) {
                 if (err) throw err;
-                console.log(docs);
+                //console.log(docs);
                 callback(null, docs);
             });
     }

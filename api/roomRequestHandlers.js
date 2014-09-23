@@ -14,22 +14,22 @@ function toCreateNewRoom(req,res){
    //  };
    	var date = new Date();
 	console.log(req.body);
+	console.log(req.body.peopleId);
 	req.body.roomDate = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
-	if ( req.session.people == null ) {
+	if ( req.body.peopleId == null ) {
 	 	console.log('not people');
 	 	res.send('fail');
 	}
 		
 	else{
-		console.log(req.session.people.peopleId);
 		async.series([
-			function(cb){ mongoDB.insertRoom(req.session.people.peopleId, req.body, cb) },
+			function(cb){ mongoDB.insertRoom(req.body.peopleId, req.body, cb) },
 			function(cb){ mongoDB.findAll("room", cb); }
 		], function(err, results) {
 			if(results[1].length == 0)
 				results[1] = null;
 	   		res.send(results[1]);
-	   		console.log(results[1]);
+	   		//console.log(results[1]);
 	   		return ;
 
 		});

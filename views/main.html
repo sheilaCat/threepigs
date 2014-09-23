@@ -37,24 +37,38 @@
 
 
 		  			$scope.toCreateNewRoom = function(){
-		  				$http.post("/toCreateNewRoom",{"roomName" : $scope.roomName, "roomDescription" : $scope.roomDescription})
-		  					.success(function(response) {
-		  						if(response != "fail"){
-		  							$scope.roomList = response;
-									var obj = {
-										author:'System',
-										type:'creatRoom',
-										msg:'创建了一个房间'
-									};
-									alert("创建了一个房间");
-									socket.emit("message",obj);
-		  						}
-		  						else{
-		  							$scope.toggleMenu('login');
-		  						}
-		  						return ;
-		  					});
-		  					return ;
+
+		  				var peopleString = session.people;
+		  				if( peopleString == null){
+		  					$scope.toggleMenu('login');
+		  				}
+		  				else{
+		  					//console.log(peopleString);
+			  				var people = JSON.parse(peopleString);
+			  				//console.log(people);
+
+			  				$http.post("/toCreateNewRoom",{"roomName" : $scope.roomName, "roomDescription" : $scope.roomDescription, "peopleId" : people.peopleId})
+			  					.success(function(response) {
+			  						if(response != "fail"){
+			  							$scope.roomList = response;
+
+										var obj = {
+											author:'System',
+											type:'creatRoom',
+											msg:'创建了一个房间'
+										};
+										alert("创建了一个房间");
+										socket.emit("message",obj);
+			  						}
+			  						else{
+			  							alert("创建房间失败");
+			  						}
+			  					return ;
+			  				});
+
+		  				}
+		  				return ;
+		  				
 		  			}
 				}
 			</script>
