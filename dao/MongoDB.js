@@ -319,7 +319,7 @@ function MongoDB(){
     }
 
     //用户加入房间
-    this.addRoom = function(peopleId, roomId){
+    this.addRoom = function(peopleId, roomId, callback){
 
 
         db.collection('room').find({'roomId' : roomId}).toArray(function(err, docs) {
@@ -333,7 +333,7 @@ function MongoDB(){
                  if (err) throw err;
                  console.log('peopleList add===>' + SUCCESS);                        
             });
-
+             callback(null, SUCCESS);
             return SUCCESS;
 
         });

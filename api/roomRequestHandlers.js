@@ -42,7 +42,15 @@ function toCreateNewRoom(req,res){
 *加入房间
 **/
 function toJoinRoom(req,res) {
-	
+	async.series([
+			function(cb){ mongoDB.addRoom(req.body.peopleId, req.body.roomId, cb); },
+		], function(err, results) {
+			console.log(results[0]);
+	   		res.send(results[0]);
+	   		return ;
+
+		});
+	return ;
 	
 }
 /**

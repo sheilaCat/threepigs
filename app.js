@@ -152,7 +152,7 @@ app.get("/toGetUserFile",accountRequestHandlers.toGetUserFile);//获取所拥有
 
 //房间请求处理
 app.post("/toCreateNewRoom",roomRequestHandlers.toCreateNewRoom);//创建房间
-app.get("/toJoinRoom",roomRequestHandlers.toJoinRoom);//加入房间
+app.post("/toJoinRoom",roomRequestHandlers.toJoinRoom);//加入房间
 app.get("/toQuitRoom",roomRequestHandlers.toQuitRoom);//退出房间
 app.get("/toAddFileToRoom",roomRequestHandlers.toAddFileToRoom);//添加资料
 app.get("/toDeleteFileFromRoom",roomRequestHandlers.toDeleteFileFromRoom);//删除资料

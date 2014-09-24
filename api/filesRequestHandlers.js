@@ -2,6 +2,7 @@ var querystring = require("querystring"),
     fs = require("fs"),
     path = require("path"),
     formidable = require("formidable");
+var async = require('async');
 try {
   var pdfutils = require('pdfutils').pdfutils;
 } catch (error) {
@@ -9,7 +10,8 @@ try {
 }
 var util = require('util');  
 var body = '';
- 
+var java = require("./jsCallJava");
+
 function start(request, response) { 
   console.log("Request handler 'start' was called."); 
  
@@ -121,7 +123,7 @@ function show(request, response) {
 
 }
 
-function pdfToPng (request, response) {
+/*function pdfToPng (request, response) {
    try {
      pdfutils(__dirname+"/document.pdf", function(err, doc) {
        var i;
@@ -133,6 +135,27 @@ function pdfToPng (request, response) {
    } catch (error) {
 
    }
+}*/
+
+function pdfToPng (request, response) {
+  /*async.series([
+    function(cb) { java.dom2pdf(__dirname + "/testpdf.pdf", cb)},
+    function(cb) { java.dom2pdf(__dirname + "/testdocx.docx", cb)},
+    function(cb) { java.dom2pdf(__dirname + "/testxlsx.xlsx", cb)},
+    function(cb) { java.dom2pdf(__dirname + "/testppt.ppt", cb)}
+  ], function(err, results) {
+    for (var i in  results) {
+        console.log(results[i]);
+    }
+    //console.log(results[0]);
+      return ;
+  });*/
+ // console.log("testpdf.pdf path = " + java.dom2pdf(__dirname + "/testpdf.pdf"));
+ java.dom2pdf(__dirname + "/testdocx.docx", function (err, result) {
+    console.log("testdocx.docx path = " + result);
+  });
+  //console.log("testxlsx.xlsx path = " + java.dom2pdf(__dirname + "/testxlsx.xlsx"));
+  //console.log("testppt.ppt path = " + java.dom2pdf(__dirname + "/testppt.ppt"));
 }
 
 exports.start = start; 

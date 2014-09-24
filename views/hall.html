@@ -10,6 +10,7 @@
 <script src = "js/angular.min.js"></script>
 <script src = "js/connection.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+<script src="js/webRTC.js"></script> 
 <script type="text/javascript">
 	var session = window.sessionStorage;
 	function shutAllPages($scope){
@@ -57,6 +58,7 @@
 			<li><a href="#" ng-click="toggleMenu('main')">大厅</a></li>
 			<li><a href="#" ng-click="toggleMenu('square')">广场</a></li>
 			<li><a href="#" ng-click="toggleMenu('setting')">设置</a></li>
+			<li><a href="/pdftopng" ng-click="">File to png</a></li>
 		</ul>
 	</div><!-- /nav-->
 	<div id="content">

@@ -68,13 +68,61 @@
 
 		  				}
 		  				return ;
-		  				
+		  			}
+
+		  			$scope.JoinRoom = function(roomId){
+		  				if(session.people == null){
+		  					$scope.toggleMenu('login');
+		  				}
+		  				else{
+		  					var people = JSON.parse(session.people);
+		  					console.log(roomId);
+		  					$http.post("/toJoinRoom",{"peopleId" : people.peopleId, "roomId" : roomId })
+			  					.success(function(response) {
+			  						if(response == "success"){
+			  					// 		$scope.roomList = response;
+
+										// var obj = {
+										// 	author:'System',
+										// 	type:'creatRoom',
+										// 	msg:'创建了一个房间'
+										// };
+										// alert("创建了一个房间");
+										// socket.emit("message",obj);
+										$scope.toggleMenu('room');
+										alert('加入了' + roomId + '号房间');
+
+
+										var webrtc = new SimpleWebRTC({
+									          // the id/element dom element that will hold "our" video
+									          localVideoEl: 'localVideo',
+									          // the id/element dom element that will hold remote videos
+									          remoteVideosEl: 'remotesVideos',
+									          // immediately ask for camera access
+									          autoRequestMedia: true
+									        });
+									 // we have to wait until it's ready
+									    webrtc.on('readyToCall', function () {
+									      // you can name it anything
+									      webrtc.joinRoom(roomId + '');
+									    });
+			  						}
+			  						else{
+			  							alert("加入房间失败");
+			  						}
+			  					return ;
+			  				});
+		  				}
+		  				return ;
+
 		  			}
 				}
+
+
 			</script>
 			<div class="btn-group-vertical">
 
-				<button type="button" class="btn" ng-click="toggleMenu('room')"  ng-repeat="room in roomList"> 
+				<button type="button" class="btn"  ng-repeat="room in roomList" ng-click="JoinRoom( room.roomId )"> 
 					<div class="room">
 					<h5>{{ room.roomName }}</h5><h6>{{ room.roomId }}</h6>
 					<p>{{ room.roomDescription }}</p>
