@@ -1,4 +1,5 @@
-﻿var paint={
+﻿
+var paint={
 	init:function()
 	{
 		this.load();
@@ -18,6 +19,7 @@
 		this.fontWeight=[2,5,8];
 		this.$=function(id){return typeof id=="string"?document.getElementById(id):id;};
 		this.canvas=this.$("canvas");
+		this.imgName="";//输入文件名字
 		if (this.canvas.getContext) {
 
 		}
@@ -126,12 +128,20 @@
 	t.$("error").innerHTML="您已使用橡皮擦！";
 	};
 	},
-	loadImg:function(filePath){
+	loadBg:function(filePath){
+		var t = this;
+		t.imgName = filePath.substring(filePath.lastIndexOf("/")+1);
+		$("#canvas").css("background-image","url('"+filePath+"')");
+	},
+	loadPic:function(filePath){
 		var t = this;
 		var img = new Image();
 		img.src=filePath;
+		img.onload=function(){
+    		t.cxt.drawImage(img,0,0);
+    		t.cxt.globalCompositeOperation = "source-over";    
+    };
 		t.cxt.drawImage(img,0,0);
-		$("#canvas").css("background-image","url('"+filePath+"')");
 	},
 	movePoint:function(x,y,dragging)
 	{
@@ -160,7 +170,8 @@
 	},
 	clear:function()
 	{
-	this.cxt.clearRect(0, 0, this.w, this.h);//清除画布，左上角为起
+		this.cxt.clearRect(0, 0, this.w, this.h);//清除画布，左上角为起
+		this.saveAsLocalImage();
 	},
 	redraw:function()
 	{
@@ -218,7 +229,8 @@
 	},
 	getUrl:function()
 	{
-	this.$("html").innerHTML=this.canvas.toDataURL();
+	//this.$("html").innerHTML=this.canvas.toDataURL();
+		this.saveAsLocalImage();
 	},
 	resetEraser:function(_x,_y,touch)
 	{
@@ -231,6 +243,32 @@
 	t.cxt.arc(_x, _y, t.eraserRadius, 0, Math.PI * 2);
 	t.cxt.strokeStyle = "rgba(250,250,250,0)";
 	t.cxt.fill();
-	t.cxt.globalCompositeOperation = "source-over"
-	}
-	};
+	t.cxt.globalCompositeOperation = "source-over";
+	},
+	saveAsLocalImage:function() {  
+    var t = this;
+    t.cxt.globalCompositeOperation="destination-over";//设置在原图下层绘制
+    t.loadPic("files/"+t.imgName);//加载背景图片
+    var img = t.canvas.toDataURL("image/png").replace("data:image/png;base64,", ""); //获取图片数据
+    var params ={
+   		imgData:img,
+    		imgName:"track_"+t.imgName.substring(0,t.imgName.lastIndexOf(".")) + ".png"
+    };
+    //发送保存请求
+    $.ajax({ 
+    	url: "/saveImg",
+    	type:"post",
+    	data: params,
+    	dataType:"json",
+    	success: function(msg){
+    		if(msg.success==1){
+    			alert('ok');  
+    		}
+    		else{
+    			alert('fail');  
+    		}
+      			
+      }  
+      });
+  } 
+};

@@ -169,7 +169,37 @@ function pdfToPng (request, response) {
   //console.log("testppt.ppt path = " + java.dom2pdf(__dirname + "/testppt.ppt"));
 }
 
+function saveImg(req,res){
+	//console.log("imgData:"+request.imgData);
+	//console.log("imgName:"+request.imgName);
+	
+	console.log(req.body.imgName);
+	try {
+            fs.mkdir(__dirname + "/../public/temp",777,function(err) {
+              if (err) {
+                console.log("mkdir error : " + err);
+              } else {
+                console.log("new dirname === " + __dirname + "/../public/temp");
+              }
+            });  
+          } catch (err) {
+            console.log("fs.mkdir error : " + err);
+        }
+	fs.writeFile(__dirname + "/../public/temp/"+req.body.imgName,req.body.imgData,"base64",function(err){
+    	if(err){
+    		console.log("f:"+err);
+    		res.json({success:0});
+    	}
+   	else{
+    		console.log("s:"+req.body.imgName);
+    		res.json({success:1});
+   	}
+  });
+  
+}
+
 exports.start = start; 
 exports.toUploadFile = toUploadFile 
 exports.show = show; 
 exports.pdfToPng = pdfToPng; 
+exports.saveImg = saveImg; 

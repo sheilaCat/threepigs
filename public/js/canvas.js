@@ -1,3 +1,3 @@
-﻿(function(){
+﻿﻿(function(){
 	paint.init();
 })();

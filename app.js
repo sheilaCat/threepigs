@@ -137,6 +137,7 @@ app.post("/toUploadFile",filesRequestHandlers.toUploadFile);//文件上传
 //app.get("/toDeleteFile",filesRequestHandlers.toDeleteFile);//删除文件
 //app.post("/toSubmitComment",filesRequestHandlers.toSubmitComment);//提交资料评论
 app.get("/pdftopng",filesRequestHandlers.pdfToPng); //测试pdf转png
+app.post("/saveImg",filesRequestHandlers.saveImg); // 保存图片
 
 //账户请求处理
 
