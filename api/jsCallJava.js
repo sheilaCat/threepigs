@@ -10,6 +10,7 @@ java.classpath.push(__dirname +"/jar/unoil-3.2.1.jar");
 } catch (err) {
 	console.log("require('java') error :" + err);
 }
+var async = require('async');
 
 var querystring = require("querystring"), 
     fs = require("fs"),
@@ -43,6 +44,8 @@ console.log("file = " + file);
 		fs.mkdir(fileRoot+"/"+fileName[0],777,function(err) {
 			if (err) {
 				console.log("mkdir error : " + err);
+			} else {
+				console.log("new dirname === " + fileRoot+"/"+fileName[0]);
 			}
 		});  
 	} catch (err) {
@@ -60,22 +63,55 @@ console.log("file = " + file);
 			);*/
 		return;
 	}
-	
 	var pdfConverter = java.import('com.converter.pdfConverter.OpenOfficeDomConverter');
 	var dom2pdf = new pdfConverter("/opt/openoffice4",8100);
 	dom2pdf.convertFile(filePath ,
-		fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf");
-	console.log("soce path ==== " + filePath);
-	console.log("pdf path === " + fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf");
-	callback(null,pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
-			fileName[0],
-			fileRoot+"/"+fileName[0] + "/"
-		));
+			fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", function(err,result){
+				var pngpath;
+				if (result == true) {
+					pngpath  = pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
+							fileName[0],
+							fileRoot+"/"+fileName[0] + "/"
+						);
+					console.log("soce path ==== " + filePath);
+					console.log("pdf path === " + fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf");
+					callback(null,pngpath);
+					return;
+				} else {
+					console.log("change fail!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					callback(null,pngpath);
+					return;
+				}
+			});
+	
+	// async.series([
+	// 	function(cb) { 
+	//  		var pdfConverter = java.import('com.converter.pdfConverter.OpenOfficeDomConverter');
+	// 		var dom2pdf = new pdfConverter("/opt/openoffice4",8100);
+	// 		dom2pdf.convertFile(filePath ,
+	// 			fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf");
+	// 	}
+	// 	], 
+	// 	function(err, results) {
+	// 		for (var i in  results) {
+	// 			console.log("result in jsCallJava " + i + " ======= " + results[i]);
+	// 		}
+	// 		var result = pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
+	// 			fileName[0],
+	// 			fileRoot+"/"+fileName[0] + "/"
+	// 		);
+	// 		callback(null,result);
+	// 		return;
+	// 	}
+	// 	//console.log(results[0]);
+	// );
+	
+	//callback(null,"change fail.");
 	/*return pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
 			fileName[0],
 			fileRoot+"/"+fileName[0] + "/"
 		);*/
-	return;
+	//return;
 }
 
 function pdfToPng (filePath, fileName, toPath) {

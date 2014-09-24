@@ -138,22 +138,33 @@ function show(request, response) {
 }*/
 
 function pdfToPng (request, response) {
-  /*async.series([
-    function(cb) { java.dom2pdf(__dirname + "/testpdf.pdf", cb)},
-    function(cb) { java.dom2pdf(__dirname + "/testdocx.docx", cb)},
-    function(cb) { java.dom2pdf(__dirname + "/testxlsx.xlsx", cb)},
-    function(cb) { java.dom2pdf(__dirname + "/testppt.ppt", cb)}
-  ], function(err, results) {
-    for (var i in  results) {
-        console.log(results[i]);
-    }
-    //console.log(results[0]);
-      return ;
-  });*/
+//   async.series([
+//     function(cb) { 
+//       java.dom2pdf(__dirname + "/testpdf.pdf", cb);
+//     },
+//     function(cb) { 
+//       java.dom2pdf(__dirname + "/testdocx.docx", cb);
+//     },
+//     function(cb) { 
+//       java.dom2pdf(__dirname + "/testxlsx.xlsx", cb);
+//     },
+//     function(cb) {
+//       java.dom2pdf(__dirname + "/testppt.ppt", cb);
+//     }
+//   ], 
+//   function(err, results) {
+//     for (var i in  results) {
+//         console.log("result " + i + " ======= " + results[i]);
+//     }
+//     //console.log(results[0]);
+//   });
  // console.log("testpdf.pdf path = " + java.dom2pdf(__dirname + "/testpdf.pdf"));
- java.dom2pdf(__dirname + "/testdocx.docx", function (err, result) {
-    console.log("testdocx.docx path = " + result);
+ java.dom2pdf(__dirname + "/testppt.ppt", function (err, result) {
+    console.log("testppt.ppt = " + result);
+    response.send(result);
+    return;
   });
+ return;
   //console.log("testxlsx.xlsx path = " + java.dom2pdf(__dirname + "/testxlsx.xlsx"));
   //console.log("testppt.ppt path = " + java.dom2pdf(__dirname + "/testppt.ppt"));
 }
