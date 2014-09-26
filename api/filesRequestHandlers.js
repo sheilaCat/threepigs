@@ -50,6 +50,9 @@ function getSuffix(fileName) {
       case ".ppt":
           suffix = "ppt";
           break;
+      case ".pptx":
+          suffix = "ppt";
+          break;
       case ".psd":
           suffix = "psd";
           break;
@@ -58,6 +61,12 @@ function getSuffix(fileName) {
           break;
       case ".zip":
           suffix = "zip";
+          break;
+      case ".doc":
+          suffix = "doc";
+          break;
+        case ".docx":
+          suffix = "doc";
           break;
       default:
           suffix = "other";
@@ -183,7 +192,7 @@ function pdfToPng (filePath, fileName, toPath) {
     pdfutils(filePath, function(err, doc) {
       var i;
       for (i = 0; i < doc.length; i++) {
-        doc[i].asPNG({maxWidth: 1200, maxHeight: 1200}).toFile(toPath + fileName + i + ".png");
+        doc[i].asPNG({maxWidth: 1200, maxHeight: 2400}).toFile(toPath + fileName + i + ".png");
         debugger;
       }
       console.log("toPath : " + toPath);
@@ -326,6 +335,7 @@ var deleteFolderRecursive = function(path) {
 
 exports.toUploadFile = toUploadFile 
 exports.domToPng = domToPng; 
+exports.dirToZip = dirToZip; 
 exports.saveImg = saveImg; 
 exports.toGetAllFile = toGetAllFile;
 exports.toGetFileByType = toGetFileByType;

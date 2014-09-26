@@ -65,25 +65,26 @@ var connection = function () {
 							var color = json.data.color;
 							var size = json.data.size;
 							var isEraser = json.data.isEraser;
-							paint.syncCanvas(x,y,color,size,isEraser,isClear);
+							var bgPath = json.data.bgPath;
+							paint.syncCanvas(x,y,color,size,isEraser,isClear,bgPath);
 					}
 	    });
 	    //导出文件
 	    socket.on('exportFile',function(json){
 					// TODO Do something.
-					var exists = json.exists;
-					if(exists){
-						var url = json.filePath;
-   					var aLink = document.createElement('a');
-    				var evt = document.createEvent("HTMLEvents");
-    				evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错
-    				aLink.download = url;
-    				aLink.href = url;
-    				aLink.dispatchEvent(evt);
-					}
-					else{
-						alert("请求资源不存在");
-					}
+		var exists = json.exists;
+		if(exists){
+			var url = json.filePath;
+			var aLink = document.createElement('a');
+			var evt = document.createEvent("HTMLEvents");
+			evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错
+			aLink.download = url;
+			aLink.href = url;
+			aLink.dispatchEvent(evt);
+		}
+		else{
+			alert("请求资源不存在");
+		}
 					
 	    });
 	} else {

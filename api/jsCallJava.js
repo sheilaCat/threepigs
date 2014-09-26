@@ -62,7 +62,7 @@ console.log("file = " + file);
 	var pdfConverter = java.import('com.converter.pdfConverter.OpenOfficeDomConverter');
 	var dom2pdf = new pdfConverter("/opt/openoffice4",8100);
 	dom2pdf.convertFile(filePath ,
-		fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", function(err,result){
+		fileRoot + "/" + fileName[0] + ".pdf", function(err,result){
 			var pngpath;
 			if (result == true) {
 				// pngpath  = pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
@@ -71,7 +71,7 @@ console.log("file = " + file);
 				// 	);
 				console.log("soce path ==== " + filePath);
 				console.log("pdf path === " + fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf");
-				callback(null,fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
+				callback(null,fileRoot + "/" + fileName[0] + ".pdf", 
 						fileName[0],
 						fileRoot+"/"+fileName[0] + "/");
 				return;

@@ -16,7 +16,7 @@ var paint={
 		this.storageColor="#000000";
 		this.eraserRadius=15;//擦除半径值
 		this.color=["#000000","#FF0000","#80FF00","#00FFFF","#808080","#FF8000","#408080","#8000FF","#CCCC00"];//画笔颜色值
-		this.fontWeight=[2,5,8];
+		this.fontWeight=[1,3,5];
 		this.$=function(id){return typeof id=="string"?document.getElementById(id):id;};
 		this.canvas=this.$("canvas");
 		this.imgName="canvas.png";//输入文件名字  默认是canvas.png
@@ -34,7 +34,7 @@ var paint={
 		}
 		this.cxt=this.canvas.getContext('2d');
 		this.cxt.lineJoin = "round";//context.lineJoin - 指定两条线段的连接方
-		this.cxt.lineWidth = 5;//线条的宽度
+		this.cxt.lineWidth = 1;//线条的宽度
 		this.iptClear=this.$("clear");
 		//this.revocation=this.$("revocation");
 		this.exportFile=this.$("exportFile");//图片路径按钮
@@ -172,7 +172,7 @@ var paint={
 		}
 	};
 	this.nextPic.onclick=function(){
-		if(t.index==t.files.length){
+		if((t.files.length!=0)&&(t.index==t.files.length-1)){
 			$(this).attr("disabled","disabled");
 		}
 		else{
@@ -206,8 +206,35 @@ var paint={
 	},
 	loadBg:function(filePath){
 		var t = this;
-		t.imgName = filePath.substring(filePath.lastIndexOf("/")+1);
-		$("#canvas").css("background-image","url('"+filePath+"')");
+		//如果是同一个文件，就不加载
+		if(t.imgName == filePath.substring(filePath.lastIndexOf("/")+1))
+		{
+		}
+		else{
+			var img = new Image();
+			img.src = filePath;
+			img.onload = function(){
+				t.canvas.width = img.width;
+				t.canvas.height = img.height;
+			};
+			t.imgName = filePath.substring(filePath.lastIndexOf("/")+1);
+			$("#canvas").css("background-image","url('"+filePath+"')");
+			var obj = {
+				'roomId':t.roomId,
+				'type':'syncCanvas',
+				'data':{
+								'isClear':false,//是否清空
+								'x':t.x,//x坐标
+								'y':t.y,//y坐标
+								'color':t.cxt.strokeStyle,//颜色
+								'size':t.cxt.lineWidth,//粗细
+								"isEraser":t.isEraser,//是不是橡皮擦
+								"bgPath":filePath
+								}
+			};
+			socket.emit("message",obj);
+		}
+		
 	},
 	loadPic:function(filePath){
 		
@@ -355,12 +382,15 @@ var paint={
       }  
       });
   },
-  syncCanvas:function(x,y,color,size,isEraser,isClear){
+  syncCanvas:function(x,y,color,size,isEraser,isClear,bgPath){
   	var t = this;
   	if(isClear){
   		t.clear();
   	}
   	else{
+  		if(bgPath!=null){
+  			t.loadBg(bgPath);
+  		}
   		var c = t.cxt.strokeStyle;
   		var l = t.cxt.lineWidth;
   		t.cxt.strokeStyle = color;
@@ -388,7 +418,7 @@ var paint={
   },
   getRes:function(pName){
   	var t = this;
-  	var pathName = pName;
+  	var pathName = pName.substring(0,pName.lastIndexOf("."));
   	var params = {'roomId':t.roomId,
   								'pathName':pathName};
   	console.log(params);
@@ -403,6 +433,9 @@ var paint={
     			t.resPath = msg.resPath;
     			t.tempDocPath = msg.tempDocPath;
     			t.files = msg.files;
+    			if(t.files.length==0){
+    				alert("无文件");
+    			}
     			console.log(t);
     			$(t.prePic).attr("disabled","disabled");
     			t.clear();

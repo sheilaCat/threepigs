@@ -3,7 +3,7 @@ var mongoDB = new MongoDB();
 var async = require('async');
 
 /**
-*µÇÂ½
+*ç™»é™†
 */
 function toLogin(req,res){
 	async.series([
@@ -17,7 +17,7 @@ function toLogin(req,res){
 	return ;
 }
 
-//ÅĞ¶Ï¸ÃÓÃ»§ÊÇ·ñµÇÂ¼
+//åˆ¤æ–­è¯¥ç”¨æˆ·æ˜¯å¦ç™»å½•
 // function toChangeLoginType(peopleId){
 // 	async.series([
 // 		function(cb){ mongoDB.changeLoginType(peopleId, cb)}
@@ -28,7 +28,7 @@ function toLogin(req,res){
 // 	return ;
 // }
 /**
-*×¢²á
+*æ³¨å†Œ
 */
 function toRegister(req,res){
 	console.log("req.body :"+req.body);
@@ -49,36 +49,36 @@ function toRegister(req,res){
 	
 }
 /**
-*µÇ³ö
+*ç™»å‡º
 */
 function toLogout(req,res){
 	
 }
 /**
-*¼ì²éÓÃ»§ÃûÊÇ·ñ´æÔÚ
+*æ£€æŸ¥ç”¨æˆ·åæ˜¯å¦å­˜åœ¨
 */
 function toCheckUserIsExist(req,res){
 	
 }/**
-*Ìá½»ÓÃ»§ĞÅÏ¢
+*æäº¤ç”¨æˆ·ä¿¡æ¯
 */
 function toSubmitUserInfo(req,res){
 	
 }
 /**
-*»ñÈ¡ÓÃ»§ĞÅÏ¢
+*è·å–ç”¨æˆ·ä¿¡æ¯
 */
 function toGetUserInfo(req,res){
 	
 }
 /**
-*Ìá½»ÑûÇë
+*æäº¤é‚€è¯·
 */
 function toSubmitInvitation(req,res){
 	
 }
 /**
-*»ñÈ¡ÑûÇëÌáÊ¾
+*è·å–é‚€è¯·æç¤º
 */
 function toGetInvitation(req,res){
 	

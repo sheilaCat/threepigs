@@ -68,12 +68,19 @@ io.on('connection', function (socket) {
 	case 'exportFile':
 	    // TODO Do something.
 	    var filePath = msg.filePath+".zip";//public/temp/room1/canvas.zip
-	    fs.exists(__dirname+"/public/"+filePath,function(result){
-	    	obj['exists']=result;
-	    	obj['filePath']=filePath;
-	    	console.log(obj);
-	    	socket.emit('exportFile',obj);
-	    });
+	    //fs.exists(__dirname+"/public/"+filePath,function(result){
+            filesRequestHandlers.dirToZip(__dirname+"/public/"+msg.filePath, function(err,result) {
+                  if (err) {
+                      obj['exists']=false;
+                      socket.emit('exportFile',obj);
+                      return;
+                  }
+                  obj['exists']=true;
+                  obj['filePath']=filePath;
+                  console.log(obj);
+                  socket.emit('exportFile',obj);
+            });
+	    //});
 	    break;
 	default:
 	    // TODO Do something.
