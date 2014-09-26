@@ -1,11 +1,34 @@
 var myName = false;
 var firstconnect = true;
-
+if(session.firstconnect != null){
+	firstconnect = session.firstconnect;
+}
 var connection = function () {
     if (firstconnect) {
     	//alert("建立连接成功");
 	    // 建立websocket连接
 	    socket = io.connect('http://localhost:3000');
+	    if(session.people != null){
+	    	var people = JSON.parse(session.people);
+	    	var obj = {
+				'type' : 'login',
+				'peopleId' : people.peopleId
+			};
+			socket.emit('message', obj);
+	    }
+		
+		//收到其它人登录信息
+	    socket.on('login',function(json){
+		// TODO Do something.
+		var people = JSON.parse(session.people);
+			if(json.peopleId == people.peopleId){
+				session.clear();
+				console.log(session);
+				alert('被挤下线');
+				socket.disconnect();
+				window.location.reload();
+			}
+	    });		
 
 	    // 收到server的连接确认
 	    socket.on('open',function(){
@@ -35,7 +58,7 @@ var connection = function () {
 	   //画布同步事件
 	   socket.on('syncCanvas',function(json){
 					// TODO Do something.
-							if(session.roomId == json.roomId){
+					if(session.roomId == json.roomId){
 							var isClear = json.data.isClear;
 							var x = json.data.x;
 							var y = json.data.y;
@@ -48,14 +71,20 @@ var connection = function () {
 	    //导出文件
 	    socket.on('exportFile',function(json){
 					// TODO Do something.
-					var roomId = json.roomId;
-					var url = "files/room"+roomId+"/content.rar";
-   				var aLink = document.createElement('a');
-    			var evt = document.createEvent("HTMLEvents");
-    			evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错
-    			aLink.download = url;
-    			aLink.href = url;
-    			aLink.dispatchEvent(evt);
+					var exists = json.exists;
+					if(exists){
+						var url = json.filePath;
+   					var aLink = document.createElement('a');
+    				var evt = document.createEvent("HTMLEvents");
+    				evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错
+    				aLink.download = url;
+    				aLink.href = url;
+    				aLink.dispatchEvent(evt);
+					}
+					else{
+						alert("请求资源不存在");
+					}
+					
 	    });
 	} else {
 alert("建立连接失败");

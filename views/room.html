@@ -3,7 +3,7 @@
 <h1>房间 
 <label>{{$root.room.roomName}}</label>
 <script type="text/javascript">
-	function roomFileController($scope, $http){
+	function roomFileController($scope, $http, $rootScope){
 
 		$scope.getAllFile = function(){
 			$http.get("/toGetAllFile").success(function(response) {$scope.fileList = response;});
@@ -16,6 +16,27 @@
 		$scope.$watch('key', function(){
 			$http.get("/toSearchFile?key=" + $scope.key).success(function(response) {$scope.fileList = response;});
 		});
+
+		$scope.outRoom = function(){
+			$http.get("/toQuitRoom?peopleId=" + $rootScope.people.peopleId + "&roomId=" + $rootScope.room.roomId).success(function(response) {
+				$rootScope.roomLeftList = [];
+				$rootScope.roomRightList = [];
+				for(var i = 0;i < response.length; i++){
+		  			if(i % 2  == 0){
+		  				$rootScope.roomLeftList.push(response[i]);
+		  							// console.log('left--->' + i);
+		  			}
+		  			else{
+		  				$rootScope.roomRightList.push(response[i]);
+		  							// console.log('right--->' + i);
+		  			}
+		  		}
+				$rootScope.room = null;
+				session.removeItem('roomId');
+				console.log(session);
+				$scope.toggleMenu('main');
+			});
+		}
 	}
 
 
@@ -37,9 +58,11 @@
       <div class="modal-body">
       	 <div class="classify">
       	 	<ul>
-      	 	<li><a href="" ng-click="getAllFile()">分类</a></li>
-      	 	<li><a href="" ng-click="getFileByType('高数')">高数</a></li>
-      	 	<li><a href="" ng-click="getFileByType('数据结构')">数据结构</a></li>
+      	 	<li><a href="" ng-click="getAllFile()">全部</a></li>
+      	 	<li><a href="" ng-click="getFileByType('resourseType')">课程资源</a></li>
+      	 	<li><a href="" ng-click="getFileByType('documentType')">文档类</a></li>
+              <li><a href="" ng-click="getFileByType('codeType')">代码类</a></li>
+              <li><a href="" ng-click="getFileByType('toolType')">工具类</a></li>
       	 	</ul> 
       	 </div>
       	 <div class="searchRes">
@@ -58,6 +81,7 @@
 </div>
 
 		<button type="button" class="btn btn-xs" type="file">打开本地文件</button>
+		<button type="submit" name="exitRoom" class="btn btn-xs" ng-click="outRoom()">退出房间</button>
 <div class="openFile">
 		<form action="/toUploadFile" enctype="multipart/form-data" method="post">
                             <input type="file" name="upload" id="exampleInputFile" multiple="multiple">

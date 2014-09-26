@@ -5,6 +5,9 @@
 <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForRoom">
 	新建房间
 </button>
+	
+	<a href="#" id="invite" class="btn btn-xs" rel="popover" data-content="点击进入XX号房间" data-original-title="房间邀请">收到邀请</a>
+	
 
 <!-- Modal -->
 <div class="modal fade" id="myModalForRoom" tabindex="-1" role="dialog" aria-labelledby="myModalLabelForRoom" aria-hidden="true">
@@ -31,6 +34,9 @@
 </h1>
 			<div class="rooms">
 			<script type="text/javascript">
+				$(function ()
+					{ $("#invite").popover({trigger: 'hover'});
+					});
 
 				function delay(){
 					setTimeout('what()',10000);
@@ -41,8 +47,27 @@
 				}
 
 				function roomController($scope, $http, $rootScope){
+					$rootScope.roomLeftList = [];
+					$rootScope.roomRightList = [];
 					$http.get("/toGetAllRoom")
-		  				.success(function(response) {$scope.roomList = response;});
+		  				.success(function(response) {
+		  					$rootScope.roomList = response;
+		  					console.log($rootScope.roomList);
+		  					//console.log(response.length);
+		  					for(var i = 0;i < response.length; i++){
+		  						if(i % 2  == 0){
+		  							$rootScope.roomLeftList.push(response[i]);
+		  							// console.log('left--->' + i);
+		  						}
+		  						else{
+		  							$rootScope.roomRightList.push(response[i]);
+		  							// console.log('right--->' + i);
+		  						}
+		  					}
+
+		  					// console.log('left---->');
+		  					// console.log($rootScope.rooomLeftList);
+		  				});
 
 
 		  			$scope.toCreateNewRoom = function(){
@@ -59,7 +84,18 @@
 			  				$http.post("/toCreateNewRoom",{"roomName" : $scope.roomName, "roomDescription" : $scope.roomDescription, "peopleId" : people.peopleId})
 			  					.success(function(response) {
 			  						if(response != "fail"){
-			  							$scope.roomList = response;
+			  							$rootScope.roomLeftList = [];
+										$rootScope.roomRightList = [];
+			  							for(var i = 0;i < response.length; i++){
+				  						if(i % 2  == 0){
+				  							$rootScope.roomLeftList.push(response[i]);
+				  							// console.log('left--->' + i);
+				  						}
+				  						else{
+				  							$rootScope.roomRightList.push(response[i]);
+				  							// console.log('right--->' + i);
+				  						}
+		  							}
 
 										var obj = {
 											author:'System',
@@ -68,7 +104,11 @@
 										};
 										
 										socket.emit("message",obj);
+										
 										$rootScope.room = response[response.length - 1];
+										session.roomId = parseInt(response[response.length - 1].roomId);
+										paint.init(session.roomId);
+		  								paint.loadBg("files/canvas.png");
 										$scope.toggleMenu('room');
 										
 			  						}
@@ -89,17 +129,41 @@
 		  				else if( session.roomId != roomId  && session.roomId != null){
 		  					alert('ni yijing jia ru fj l ' + session.roomId);
 		  				}
-		  				else{
-		  					session.roomId=roomId;
-		  					paint.init(session.roomId);
+		  				else if( session.roomId == roomId ){
+
+		  					$scope.toggleMenu('room');
+										// alert('加入了' + roomId + '号房间');
+
+							paint.init(session.roomId);
 		  					paint.loadBg("files/canvas.png");
+							var webrtc = new SimpleWebRTC({
+								// the id/element dom element that will hold "our" video
+								localVideoEl: 'localVideo',
+								// the id/element dom element that will hold remote videos
+								remoteVideosEl: 'remotesVideos',
+								// immediately ask for camera access
+								autoRequestMedia: true
+							});
+							// we have to wait until it's ready
+							webrtc.on('readyToCall', function () {
+							// you can name it anything
+								webrtc.joinRoom(roomId + '');
+							});
+							delay();
+		  				}
+		  				else{
 		  					var people = JSON.parse(session.people);
-		  					console.log(roomId);
 		  					$http.post("/toJoinRoom",{"peopleId" : people.peopleId, "roomId" : roomId })
 			  					.success(function(response) {
-			  						if(response != null){
+			  						if(response != 'fail'){
 			  					// 		$scope.roomList = response;
+			  							session.roomId=roomId;
+		  								paint.init(session.roomId);
+		  								paint.loadBg("files/canvas.png");
+		  								
+		  								console.log(roomId);
 			  							$rootScope.room = response[0];
+
 										// var obj = {
 										// 	author:'System',
 										// 	type:'creatRoom',
@@ -139,9 +203,9 @@
 
 
 			</script>
-			<div class="btn-group-vertical">
+			<div class="btn-group-vertical leftRoom">
 
-				<button type="button" class="btn"  ng-repeat="room in roomList" ng-click="JoinRoom( room.roomId )"> 
+				<button type="button" class="btn"  ng-repeat="room in $root.roomLeftList" ng-click="JoinRoom( room.roomId )"> 
 					<div class="room">
 					<h5>{{ room.roomName }}</h5><h6>{{ room.roomId }}</h6>
 					<p>{{ room.roomDescription }}</p>
@@ -149,6 +213,19 @@
 				</button>
 
 			</div>
+
+			<div class="btn-group-vertical rightRoom">
+
+				<button type="button" class="btn"  ng-repeat="room in $root.roomRightList" ng-click="JoinRoom( room.roomId )"> 
+					<div class="room">
+					<h5>{{ room.roomName }}</h5><h6>{{ room.roomId }}</h6>
+					<p>{{ room.roomDescription }}</p>
+					</div>
+				</button>
+
+			</div>
+
+
 			</div>
 		</div>
 		</div>

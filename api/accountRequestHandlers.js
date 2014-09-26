@@ -18,15 +18,15 @@ function toLogin(req,res){
 }
 
 //ÅÐ¶Ï¸ÃÓÃ»§ÊÇ·ñµÇÂ¼
-function toChangeLoginType(peopleId){
-	async.series([
-		function(cb){ mongoDB.changeLoginType(peopleId, cb)}
-	], function(err, results) {
-   		return ;
-	});
-	console.log("end");
-	return ;
-}
+// function toChangeLoginType(peopleId){
+// 	async.series([
+// 		function(cb){ mongoDB.changeLoginType(peopleId, cb)}
+// 	], function(err, results) {
+//    		return ;
+// 	});
+// 	console.log("end");
+// 	return ;
+// }
 /**
 *×¢²á
 */
@@ -91,7 +91,7 @@ function toGetUserFile(req,res){
 }
 
 
-exports.toChangeLoginType = toChangeLoginType;
+// exports.toChangeLoginType = toChangeLoginType;
 exports.toLogin = toLogin;
 exports.toRegister = toRegister;
 exports.toLogout = toLogout;

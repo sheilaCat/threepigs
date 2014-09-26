@@ -12,7 +12,7 @@ var accountRequestHandlers = require("./api/accountRequestHandlers");
 var roomRequestHandlers = require("./api/roomRequestHandlers"); 
 var commonRequestHandlers = require("./api/commonRequestHandlers"); 
 var session = require('express-session');
-
+var fs=require("fs");
 
 //设置日志级别
 io.set('log level', 1); 
@@ -38,7 +38,8 @@ io.on('connection', function (socket) {
 	    // TODO Do something.
       console.log(msg);
       client.name = msg.peopleId;
-      accountRequestHandlers.toChangeLoginType(client.name);
+      //accountRequestHandlers.toChangeLoginType(client.name, 'login');
+      socket.broadcast.emit('login',msg);
 	    break;
 	case 'logout':
 	    // TODO Do something.
@@ -58,16 +59,21 @@ io.on('connection', function (socket) {
 	    // TODO Do something.
 	    // obj['data']=msg.data;
 	    //返回房间列表
-      console.log(msg.roomId);
-      socket.emit('syncCanvas',msg);
-      //广播新建房间
-      socket.broadcast.emit('syncCanvas',msg);
+      		console.log(msg.roomId);
+		socket.emit('syncCanvas',msg);
+     	 	//广播新建房间
+      		socket.broadcast.emit('syncCanvas',msg);
 	    break;
 	    //导出文件
 	case 'exportFile':
 	    // TODO Do something.
-	    obj['roomId']=msg.roomId;
-      socket.emit('exportFile',obj);
+	    var filePath = msg.filePath+".zip";//public/temp/room1/canvas.zip
+	    fs.exists(__dirname+"/public/"+filePath,function(result){
+	    	obj['exists']=result;
+	    	obj['filePath']=filePath;
+	    	console.log(obj);
+	    	socket.emit('exportFile',obj);
+	    });
 	    break;
 	default:
 	    // TODO Do something.
@@ -106,7 +112,7 @@ io.on('connection', function (socket) {
         text:client.name,
         type:'disconnect'
       };
-      accountRequestHandlers.toChangeLoginType(client.name);
+      //accountRequestHandlers.toChangeLoginType(client.name);
       // 广播用户已退出
       socket.broadcast.emit('system',obj);
       console.log(client.name + 'Disconnect');

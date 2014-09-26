@@ -10,27 +10,27 @@ h1>input{font-size: 13px;font-family: '宋体';color:#fff;}
 .login>button{background-color: #00aeef;display: block;width: 200px;margin-top: 20px;}
 .login>p{color:#919191;text-indent: 30px;}
 .nav>li>a:focus,.nav>li>a:hover,.nav>li>a:visited{background-color: #1e2025;
-			color:#00aeef;
-			border-left-width: 7px;
-			border-left-color:#00aeef;
-			border-left-style: solid;
-			-webkit-transition-duration:1s;
-			-moz-transition-duration:1s;
-			-ms-transition-duration:1s;
-			-o-transition-duration:1s;}
+color:#00aeef;
+border-left-width: 7px;
+border-left-color:#00aeef;
+border-left-style: solid;
+-webkit-transition-duration:1s;
+-moz-transition-duration:1s;
+-ms-transition-duration:1s;
+-o-transition-duration:1s;}
 .profile{padding-top: 40px;padding-bottom: 50px;}
 .profile a>img{padding-bottom:10px;display: block;margin-left:50px;max-width: 80px;}
 .profile label{color:gray;font-weight: normal;font-size: 10px;}
 .rooms{position: absolute;margin-left: 300px;padding-top: 30px}
 .btn>.room>h5,h6{color: #969696;font-size: 12px;margin-right: 20px;margin-left: 20px;line-height: 0px;}
 .btn>.room>h5{text-align: left;}
-.btn>.room>h6{text-align: right;margin-left: 500px;}
+.btn>.room>h6{text-align: right;margin-left: 100px;}
 .btn>.room>p{color: #fff;text-align: left;margin-left: 20px;}
 .btn-group-vertical>.btn:focus,.btn:hover{background-color: #5a5a5a;
-			-webkit-transition-duration:1s;
-			-moz-transition-duration:1s;
-			-ms-transition-duration:1s;
-			-o-transition-duration:1s;}
+-webkit-transition-duration:1s;
+-moz-transition-duration:1s;
+-ms-transition-duration:1s;
+-o-transition-duration:1s;}
 .btn{background-color: #363840;border-color: #1e2025}
 .canvas{display:block;background-color: gray;padding-top: 200px;margin-left: 300px;width: 700px;height:500px;border-radius: 10px;}
 #files{padding-top:50px;margin-left: 330px;}
@@ -53,11 +53,11 @@ select{display: block;margin-top: 20px;width: 200px;border-radius: 3px;}
 #exampleInputFile{font-size: 13px;font-family: '宋体';margin-left: 15px;color:#fff;}
 .openFile{position: absolute;margin-left: 750px;}
 #uploadFile{background-color: #00aeef;color:#fff;margin-left: 15px;}
-#uploadFile:focus,#uploadFile:hover{background-color: gray;color:#000;			
-			-webkit-transition-duration:1s;
-			-moz-transition-duration:1s;
-			-ms-transition-duration:1s;
-			-o-transition-duration:1s;}
+#uploadFile:focus,#uploadFile:hover{background-color: gray;color:#000;	
+-webkit-transition-duration:1s;
+-moz-transition-duration:1s;
+-ms-transition-duration:1s;
+-o-transition-duration:1s;}
 #uploadFile label{font-size: 12px;font-weight: 0;font-family: '宋体';}
 #uploadFilePage input,#uploadFilePage select{height: 25px;width: 200px;margin-left: 20px;}
 #uploadFilePage button{margin-left: 50px;color: #fff}
@@ -68,12 +68,22 @@ select{display: block;margin-top: 20px;width: 200px;border-radius: 3px;}
 #uploadFilePage select{padding-top: 0;margin-top: 0}
 h1>label{font-size: 20px}
 .lookFile{position: absolute;margin-left: 300px;color: #fff;}
-.file button{background-color: red;}
-#content > div:nth-child(8) > div > div > button:nth-child(6){margin-left: 20px;}
-#content > div> div > div > button{background-color: #00aeef; border-color: #fff;width: 150px;color:#fff;}
+.file button,.file button:hover{background-color: transparent;}
+#content > div:nth-child(8) > div > div > a:nth-child(6){margin-left: 20px;}
+#content > div> div > div > a{background-color: #00aeef; border-color: #fff;width: 150px;color:#fff;}
 .fileInfo{padding:20px 20px 20px 20px;background-color: #fff;box-shadow: 0px 15px 15px #111;color: #000;border-radius: 5px;}
 #content > div> div > div > button:hover{background-color: gray;color:#000;			
 			-webkit-transition-duration:1s;
 			-moz-transition-duration:1s;
 			-ms-transition-duration:1s;
 			-o-transition-duration:1s;}
+.leftRoom{width: 400px;float: left;}
+.rightRoom{padding-left:0;margin-left:40px;width: 400px;float: right;}
+.popover-title{}
+.popover-content{font-size: 20px;}
+#logo{position: absolute;z-index: 1000;margin-left: 60px;margin-top: 200px;}
+#logo > a > img:hover{padding-left: 10px;padding-top: 10px;}
+#prePic,#nextPic{width: 30px;height: 30px;}
+#prePic{position: absolute;padding-top:0;border-radius: 5px;margin-top: 200px;border-radius: 10px;}
+#nextPic{position: absolute;margin-left:750px;margin-top: 200px;border-radius: 10px;}
+#canvas{margin-left: 20px;margin-top: 20px;}

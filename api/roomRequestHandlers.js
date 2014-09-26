@@ -1,6 +1,7 @@
 var MongoDB = require('../dao/MongoDB');
 var mongoDB = new MongoDB();
 var async = require('async');
+var fileApi = require('./filesRequestHandlers.js');
 
 /**
 *创建房间
@@ -13,7 +14,7 @@ function toCreateNewRoom(req,res){
    //       "roomDate" : "2014-09-18"
    //  };
    	var date = new Date();
-	console.log(req.body);
+	console.log("req.body :  "+req.body);
 	console.log(req.body.peopleId);
 	req.body.roomDate = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
 	if ( req.body.peopleId == null ) {
@@ -26,6 +27,9 @@ function toCreateNewRoom(req,res){
 			function(cb){ mongoDB.insertRoom(req.body.peopleId, req.body, cb) },
 			function(cb){ mongoDB.findAll("room", cb); }
 		], function(err, results) {
+			if (!err) {
+				fileApi.createRoomFolder(req.body.roomId);
+			}
 			if(results[1].length == 0)
 				results[1] = null;
 	   		res.send(results[1]);
@@ -57,7 +61,16 @@ function toJoinRoom(req,res) {
 *退出房间
 **/
 function toQuitRoom(req,res) {
-	
+	console.log("in toQuitRoom!!!!!!!!!!!!");
+	async.series([
+			function(cb){ mongoDB.outRoom(req.query.peopleId, req.query.roomId, cb); },
+		], function(err, results) {
+			console.log(results[0]);
+	   		res.send(results[0]);
+	   		return ;
+
+		});
+	return ;
 	
 }
 /**
@@ -98,7 +111,7 @@ function toPassPaint(req,res) {
 *获取所有房间
 **/
 function toGetAllRoom(req, res) {
-
+	console.log('toGetAllRoom');
 	async.series([
 		function(cb){  mongoDB.findAll("room", cb);}
 	], function(err, results) {

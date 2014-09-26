@@ -15,7 +15,7 @@
 					</select>
 					<label>关键词：</label>
 					<input type="text" class="form-control" name="keyword" ng-model="keyword" placeholder="Enter keywords" />
-					<input  type="text" name="peopleId" ng-model="people.peopleId"/>
+					<input  type="hidden" name="peopleId" value="{{$root.people.peopleId}}"/>
 					<label>资源描述：</label>
 					<p><textarea name="describe" rows="5" cols="35" ng-model="describe"></textarea></p>
 

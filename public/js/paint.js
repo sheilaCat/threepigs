@@ -19,8 +19,9 @@ var paint={
 		this.fontWeight=[2,5,8];
 		this.$=function(id){return typeof id=="string"?document.getElementById(id):id;};
 		this.canvas=this.$("canvas");
-		this.imgName="";//输入文件名字
-		this.resPath="";//资源文件路径
+		this.imgName="canvas.png";//输入文件名字  默认是canvas.png
+		this.resPath="files";//资源文件保存路径   默认是file
+		this.tempDocPath="temp/room"+roomId+"/canvas";//临时文件保存路径  默认是
 		this.roomId=roomId;//创建画布的房间的名字
 		this.files=[];//当前的资源文件
 		this.index = 0;//当前播放的位置
@@ -57,6 +58,7 @@ var paint={
 				var k=confirm('确定清除画布上面的内容？');
 				if(k){
 					t.clear();
+					t.saveAsLocalImage();
 					var obj = {
 						'roomId':paint.roomId,
 						'type':'syncCanvas',
@@ -128,7 +130,7 @@ var paint={
 	{
 		//var touch=t.touch ? e.touches[0] : e;
 	var obj = {
-				'roomId':paint.roomId,
+				'roomId':t.roomId,
 				'type':'syncCanvas',
 				'data':{
 								'isClear':false,//是否清空
@@ -158,24 +160,31 @@ var paint={
 			$(this).attr("disabled","disabled");
 		}
 		else{
+			//切换图片之前先保存下来
+			//t.saveAsLocalImage();
 			t.index--;
 			$("font#pageInf").html("共："+t.files.length+" 页     "+(t.index+1)+"/"+t.files.length);
 			$(t.nextPic).removeAttr("disabled");
 			t.clear();
 			t.loadBg(t.resPath+"/"+t.files[t.index]);
+			//t.saveAsLocalImage();
+			t.loadPic(t.tempDocPath+"/"+t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png");
 		}
 	};
 	this.nextPic.onclick=function(){
-		if(t.index==t.files.length-1){
+		if(t.index==t.files.length){
 			$(this).attr("disabled","disabled");
 		}
 		else{
+			//t.saveAsLocalImage();
 			t.index++;
 			$("font#pageInf").html("共："+t.files.length+" 页     "+(t.index+1)+"/"+t.files.length);
 			//$(this).removeAttr("disabled");
 			$(t.prePic).removeAttr("disabled");
 			t.clear();
 			t.loadBg(t.resPath+"/"+t.files[t.index]);
+			//t.saveAsLocalImage();
+			t.loadPic(t.tempDocPath+"/"+t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png");
 		}
 	};
 	this.changeColor();
@@ -190,7 +199,9 @@ var paint={
 	t.$("error").style.color="red";
 	t.$("error").innerHTML="您已使用橡皮擦！";
 	};
-	t.getRes();
+	
+	//t.getRes("files/ToolType/face");
+	t.loadBg(t.resPath+"/"+t.imgName);
 	
 	},
 	loadBg:function(filePath){
@@ -296,12 +307,12 @@ var paint={
 	download:function()
 	{
 		//this.saveAsLocalImage();
+		var t = this;
 		var obj={
-			'type':'exportFile',
-			'roomId':this.roomId
+				'type':'exportFile',//类型是导出
+				'filePath':t.tempDocPath //传入临时文件夹路径 temp/roomX/fileName
 		}
 		socket.emit("message",obj);
-		
 	},
 	resetEraser:function(_x,_y,touch)
 	{
@@ -316,6 +327,7 @@ var paint={
 	t.cxt.fill();
 	t.cxt.globalCompositeOperation = "source-over";
 	},
+	//保存文件
 	saveAsLocalImage:function() {  
     var t = this;
     t.cxt.globalCompositeOperation="destination-over";//设置在原图下层绘制
@@ -323,7 +335,8 @@ var paint={
     var img = t.canvas.toDataURL("image/png").replace("data:image/png;base64,", ""); //获取图片数据
     var params ={
    		imgData:img,
-    		imgName:"track_"+t.imgName.substring(0,t.imgName.lastIndexOf("/"))+".png"
+    	imgName:t.imgName.substring(0,t.imgName.lastIndexOf("."))+".png",
+    	imgPath:t.tempDocPath
     };
     //发送保存请求
     $.ajax({ 
@@ -333,10 +346,10 @@ var paint={
     	dataType:"json",
     	success: function(msg){
     		if(msg.success==1){
-    			alert('ok');  
+    			console.log('ok');  
     		}
     		else{
-    			alert('fail');  
+    			console.log('fail');  
     		}
       			
       }  
@@ -373,9 +386,12 @@ var paint={
 		clearInterval(t.Timer);
 		t.Timer=null;
   },
-  getRes:function(){
+  getRes:function(pName){
   	var t = this;
-  	var params = {'roomId':t.roomId};
+  	var pathName = pName;
+  	var params = {'roomId':t.roomId,
+  								'pathName':pathName};
+  	console.log(params);
 		$.ajax({ 
     	url: "/getRoomRes",
     	type:"get",
@@ -383,8 +399,9 @@ var paint={
     	dataType:"json",
     	success: function(msg){
     		if(msg.result==1){
-    			alert('获取文件成功');
+    			console.log('获取文件成功');
     			t.resPath = msg.resPath;
+    			t.tempDocPath = msg.tempDocPath;
     			t.files = msg.files;
     			console.log(t);
     			$(t.prePic).attr("disabled","disabled");
@@ -394,8 +411,13 @@ var paint={
     		}
     		else{
     			alert("获取文件失败");
+    			t.files=[];
+    			t.resPath="files";
+    			t.tempDocPath="temp";
+    			t.loadBg(t.resPath+"/canvas.png");
+    			$("font#pageInf").html("未加载任何数据!");
     		}
-      			
+      	t.saveAsLocalImage();
       }  
    });
   }

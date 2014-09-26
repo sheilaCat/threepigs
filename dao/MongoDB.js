@@ -6,6 +6,7 @@ var db;
 var SUCCESS = "success";
 var FAIL = "fail";
 var util = require('util');  
+var fileApi = require("../api/filesRequestHandlers.js");
 // Initialize connection once
 MongoClient.connect("mongodb://localhost:27017/threepigs", function(err, database) {
     if(err) throw err;
@@ -97,18 +98,18 @@ function MongoDB(){
             }
             else{
 
-                if(docs[0].peopleType =='login'){
-                    console.log('userAccount is null');
+                // if(docs[0].peopleType =='login'){
+                    
 
-                    callback(null, FAIL);
-                    return ;
-                }
-                else{
-                    console.log('userAccount is  not null');
-                    //console.log(docs);
-                    callback(null, docs);
-                }
-                
+                //     callback(null, FAIL);
+                //     return ;
+                // }
+                // else{
+                    
+                //     //console.log(docs);
+                //     callback(null, docs);
+                // }
+                callback(null, docs);
                 return ;
             }
         });
@@ -364,6 +365,10 @@ function MongoDB(){
             var temp = {
                 'peopleId' : peopleId
             };
+            if(docs.length == 0){
+                callback(null, FAIL); 
+                return ;
+            }
             
             docs[0].peopleList.push(temp);
             db.collection('room').update( {'roomId' : roomId} ,{$set: {'peopleList': docs[0].peopleList}},  {w:1}, function(err, docs) {
@@ -383,12 +388,18 @@ function MongoDB(){
     }
 
     //用户退出房间,当房间没人时， 该房间被删除
-    this.outRoom = function(peopleId, roomId){
-
+    this.outRoom = function(peopleId, roomId, callback){
+            console.log(roomId);
+            roomId = parseInt(roomId);
         db.collection('room').find({'roomId' : roomId}).toArray(function(err, docs) {
             if (err) throw err;
             
-            
+            console.log(docs);
+            if(docs.length == 0){
+                callback(null, fail); 
+                return ;
+            }
+
             var temp = docs[0].peopleList;
 
             for( i in temp ){
@@ -405,19 +416,34 @@ function MongoDB(){
 
                 db.collection('room').find({'roomId' : roomId}).toArray(function(err, docs) {
                     if (err) throw err;
-                    console.log(docs);
+                    //console.log(docs);
                     if(docs[0].peopleList.length == 0){
                         db.collection('room').remove( {'roomId' : roomId} ,{w: 1}, function(err, docs) {
                             if (err) throw err;
                             console.log('room delete===>' + SUCCESS);
+                            try {
+                                fileApi.delRoomFolder(roomId);
+                            } catch (err) {
+                                console.log("Delete folder fail! error : " + err);
+                            }
+                            db.collection('room').find({},{sort: {'roomId': 1}}).toArray(function(err, docs) {
+                                callback(null, docs); 
+                            });
+                            return ;
                         });  
-                    }    
+                    }else{
+                        db.collection('room').find({},{sort: {'roomId': 1}}).toArray(function(err, docs) {
+                            callback(null, docs); 
+                        });
+                    } 
+                    
                 });
+                  
                                    
             });
 
 
-            return SUCCESS;
+            return ;
 
         });
     }
@@ -540,36 +566,36 @@ function MongoDB(){
 
 
 
-    this.changeLoginType = function(peopleId, callback){
-        db.collection('people').find({'peopleId' : peopleId }, {'peopleType': 1}).toArray(function(err, docs){
-            if(err) throw err;
-            try{
-                if(docs[0].peopleType == null)
-                docs[0].peopleType = 'logout';
-            }catch(err){
-                docs[0].peopleType = 'logout';
-            }
+    // this.changeLoginType = function(peopleId, callback){
+    //     db.collection('people').find({'peopleId' : peopleId }, {'peopleType': 1}).toArray(function(err, docs){
+    //         if(err) throw err;
+    //         try{
+    //             if(docs[0].peopleType == null)
+    //             docs[0].peopleType = 'logout';
+    //         }catch(err){
+    //             docs[0].peopleType = 'logout';
+    //         }
             
             
 
-            if( docs[0].peopleType =='logout' ){
-                db.collection('people').update({'peopleId': peopleId}, {$set: {'peopleType': 'login'}}, {w:1,upsert:true}, function(err) {
-                    if (err) console.warn(err.message);
-                    console.log('people login ===>' + SUCCESS);
-                });
-            }
-            else{
-                db.collection('people').update({'peopleId': peopleId}, {$set: {'peopleType': 'logout'}}, {w:1,upsert:true}, function(err) {
-                    if (err) console.warn(err.message);
-                    console.log('people logout ===>' + SUCCESS);
-                });
-            }
-             callback(null, SUCCESS);
-            return ;
-        });
-       return ;
+    //         if( docs[0].peopleType =='logout' ){
+    //             db.collection('people').update({'peopleId': peopleId}, {$set: {'peopleType': 'login'}}, {w:1,upsert:true}, function(err) {
+    //                 if (err) console.warn(err.message);
+    //                 console.log('people login ===>' + SUCCESS);
+    //             });
+    //         }
+    //         else{
+    //             db.collection('people').update({'peopleId': peopleId}, {$set: {'peopleType': 'logout'}}, {w:1,upsert:true}, function(err) {
+    //                 if (err) console.warn(err.message);
+    //                 console.log('people logout ===>' + SUCCESS);
+    //             });
+    //         }
+    //          callback(null, SUCCESS);
+    //         return ;
+    //     });
+    //    return ;
 
-    }
+    // }
 
 }
 module.exports = MongoDB;

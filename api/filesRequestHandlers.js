@@ -17,28 +17,58 @@ var util = require('util');
 var body = '';
 var java = require("./jsCallJava");
 
-function start(request, response) { 
-  console.log("Request handler 'start' was called."); 
+// Change request type to real type
+function typeToStr(strType) {
+  var type = parseInt(strType);
+    switch(type) {
+        case 1:
+          return "resourseType";
+          break;
+        case 2:
+          return "documentType";
+          break;
+        case 3:
+          return "codeType";
+          break;
+        case 4:
+          return "toolType";
+          break;
+    }
+    return;
+}
+
+// Get the suffix of file by file name.
+function getSuffix(fileName) {
+  var suffix = fileName.substring(fileName.lastIndexOf("."),fileName.length);
+    switch(suffix){
+      case ".jpg":
+          suffix = "jpg";
+          break;
+      case ".mp4":
+          suffix= "mp4";
+          break;
+      case ".ppt":
+          suffix = "ppt";
+          break;
+      case ".psd":
+          suffix = "psd";
+          break;
+      case ".txt":
+          suffix = "txt";
+          break;
+      case ".zip":
+          suffix = "zip";
+          break;
+      default:
+          suffix = "other";
+          break;
+    }
+    return suffix;
+}
  
-  body = '<html>'+ 
-    '<head>'+ 
-    '<meta http-equiv="Content-Type" content="text/html; '+ 
-    'charset=UTF-8" />'+ 
-    '</head>'+ 
-    '<body>'+ 
-    '<form action="/upload" enctype="multipart/form-data" '+ 
-    'method="post">'+ 
-    '<input type="file" name="upload" multiple="multiple">'+ 
-    '<input type="submit" value="Upload file" />'+ 
-    '</form>'+ 
-    '</body>'+ 
-    '</html>'; 
- 
-    response.writeHead(200, {"Content-Type": "text/html"}); 
-    response.write(body); 
-    response.end(); 
-} 
- 
+ // Deal the upload file request.
+ // Save the file to real way and insert the file detail to mongoDB.
+ // Response the homepage
 function toUploadFile(request, response) {
   console.log("Request handler 'upload' was called.");
   // console.log("response = " + util.inspect(response,true));
@@ -50,8 +80,8 @@ function toUploadFile(request, response) {
     //console.log("parsing done");
     //console.log(request.files.upload.path);
     // console.log("fields = " + util.inspect(fields,true)); 
-    console.log("request = " + request.body.peopleId);
-    // console.log("files = " + util.inspect(request.files,true));
+    //console.log("request = " + request.body.peopleId);
+    console.log("request = " + util.inspect(request,true));
     //fs.renameSync(files.upload.path, "/tmp/test.png"); 这个会报错，这个应该是linux的路径 
     // files.upload.path = "G:/test.png";
     // fs.write(files.fd,files,files.length,files.upload.path,function(err, bytesRead, buffer) {
@@ -64,28 +94,16 @@ function toUploadFile(request, response) {
     //     console.log("write error = " + err);
     //   }
     // });
-    var fileType;
-    switch(request.body.type) {
-        case 1:
-          fileType = "resourseType";
-          break;
-        case 2:
-          fileType= "documentType";
-          break;
-        case 3:
-          fileType = "codeType";
-          break;
-        case 4:
-          fileType = "toolType";
-          break
-    }
+    var fileType = typeToStr(request.body.type);
+    var suffix = getSuffix(request.files.upload.name);
     var date = new Date();
     var obj = {
       "fileName" : request.body.filename,
       "fileType" : fileType,
+      "fileSuffix" : suffix,
       "fileUploadDate" : date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate(),
       "fileDescription" : request.body.describe,
-      "fileLocation" : __dirname + "/../public/files/"+fileType+"/"+request.body.filename + request.files.upload.name.substring(request.files.upload.name.lastIndexOf("."),request.files.upload.name.length),
+      "fileLocation" : "/files/"+fileType+"/"+request.body.filename + request.files.upload.name.substring(request.files.upload.name.lastIndexOf("."),request.files.upload.name.length),
       "fileTimes" : 0
     };
 
@@ -99,7 +117,7 @@ function toUploadFile(request, response) {
         // "fileLocation" : "???",
         // "fileTimes" : 0
   //   };
-    fs.writeFileSync( obj.fileLocation, fs.readFileSync(request.files.upload.path) );
+    fs.writeFileSync( __dirname + "/../public" + obj.fileLocation, fs.readFileSync(request.files.upload.path) );
     var peopleId = parseInt(request.body.peopleId);
     mongoDB.uploadFile(peopleId,obj);
     fs.unlink(request.files.upload.path, function (error) {
@@ -108,111 +126,53 @@ function toUploadFile(request, response) {
         console.log("unlink error : " = error);
       }
     });
+    domToPng(__dirname + "/../public" + obj.fileLocation);
     console.log("files.upload.path = " + request.files.upload.path);
     response.redirect("/hall.html");
     return;
 } 
- 
-function show(request, response) { 
-  console.log("Request handler 'show' was called."); 
-  //winodw认的路径，nodejs的安装路径 
-  // fs.readFile("test.png", "binary", function(error, file) { 
-  //   if(error) { 
-  //     console.log("error = " + error); 
-  //     response.writeHead(500, {"Content-Type": "text/plain"}); 
-  //     response.write(error + "\n"); 
-  //     response.end(); 
-  //   } else { 
-  //     console.log(file.path); 
-  //     response.writeHead(200, {"Content-Type": "image/png"}); 
-  //     response.write(file, "binary"); 
-  //     response.end(); 
-  //   } 
-  // });
-  fs.readdir(__dirname + "/../public/files/", function (err, files) {
-    // body...
-    debugger;
-    if (err) {
-      console.log("readdir error : " + err);
-    } else {
-     body = '<html>'+ 
-    '<head>'+ 
-    '<meta http-equiv="Content-Type" content="text/html; '+ 
-    'charset=UTF-8" />'+ 
-    '</head>'+ 
-    '<body>';
-    
-      for (var i = 0; i < files.length; i++) {
-        console.log("i : " + i + "   files.length : " + files.length + "  filename : " + files[i]);
-        body = body + '<a href="files/' + files[i] + '">' + files[i] + '</a><br />';
-      }
-      body = body + '</body>'+ 
-      '</html>'; 
-      console.log("body : " + body);
-      response.writeHead(200, {"Content-Type": "text/html"}); 
-      response.write(body); 
-      response.end();
-    }
-  });
-  
 
-}
 
-function dirToZip(dirname,filename,callback) {
-  var archive = new zip();
-  zipdir(dirname , { saveTo: dirname + "/" + filename }, function (err, buffer) {
+// Compress a folder to a zip.
+function dirToZip(dirname,callback) {
+  //var archive = new zip();
+      zipdir(dirname , { saveTo: dirname+".zip"}, function (err, buffer) {
               callback(err, buffer);
-            });
-  console.log("toAddFiles = " + util.inspect(toAddFiles,true));
-   fs.readdir(dirname, function (err, files) {
-    // body...
-    debugger;
-    if (err) {
-      console.log("readdir error : " + err);
-    } else {
-      var toAddFiles=[];
-      for (var i = 0; i < files.length; i++) {
-        console.log("i : " + i + "   files.length : " + files.length + "  filename : " + files[i]);
-        body = body + '<a href="files/' + files[i] + '">' + files[i] + '</a><br />';
-        if(!(files[i].lastIndexOf(".pdf") > 0)) {
-          toAddFiles[i] = {name: files[i], path: dirname + files[i]};
-        }
+       });
+  // console.log("toAddFiles = " + util.inspect(toAddFiles,true));
+  //  fs.readdir(dirname, function (err, files) {
+  //   // body...
+  //   debugger;
+  //   if (err) {
+  //     console.log("readdir error : " + err);
+  //   } else {
+  //     var toAddFiles=[];
+  //     for (var i = 0; i < files.length; i++) {
+  //       console.log("i : " + i + "   files.length : " + files.length + "  filename : " + files[i]);
+  //       if(!(files[i].lastIndexOf(".pdf") > 0)) {
+  //         toAddFiles[i] = {name: files[i], path: dirname + files[i]};
+  //       }
           
-      }
-      console.log("toAddFiles = " + util.inspect(toAddFiles,true));
-    }
-  });
-
+  //     }
+  //     console.log("toAddFiles = " + util.inspect(toAddFiles,true));
+  //   }
+  // });
 }
 
-/*function pdfToPng (request, response) {
-   try {
-     pdfutils(__dirname+"/document.pdf", function(err, doc) {
-       var i;
-       for (i = 0; i < doc.length; i++) {
-         doc[i].asPNG({maxWidth: 1200, maxHeight: 1200}).toFile(__dirname+'/../public/firstpage'+i+'.png');
- debugger;
-       }
-     });
-   } catch (error) {
-
-   }
-}*/
-
-function domToPng (request, response) {
-   java.dom2pdf(__dirname + "/testppt.ppt", function (err, filePath,fileName,dirPath) {
+function domToPng (domFirePath) {
+   java.dom2pdf(domFirePath, function (err, pdfFilePath,fileName,dirPath) {
     if (err) {
       console.log("domToPDF error : " + err);
-      response.send(err);
+      //response.send(err);
     }
       //console.log("testppt.ppt = " + result);
-      pdfToPng(filePath, fileName, dirPath);
+      pdfToPng(pdfFilePath, fileName, dirPath);
       // if (err) {
       //   response.send(" java.dom2pdf error : " + err);
       // }
       // else {
       //   
-      response.send("OK");
+      //response.send("OK");
       // }
    return;
   });
@@ -239,25 +199,26 @@ function saveImg(req,res){
 	//console.log("imgData:"+request.imgData);
 	//console.log("imgName:"+request.imgName);
 	
-	console.log(req.body.imgName);
+	console.log(req.body.imgPath);
+	console.log(__dirname + "/../public/"+req.body.imgPath+"/"+req.body.imgName);
 	try {
-            fs.mkdir(__dirname + "/../public/temp",777,function(err) {
+            fs.mkdir(__dirname + "/../public/"+req.body.imgPath,777,function(err) {
               if (err) {
                 console.log("mkdir error : " + err);
               } else {
-                console.log("new dirname === " + __dirname + "/../public/temp");
+                console.log("new dirname === " + __dirname + "/../public/"+req.body.imgPath);
               }
             });  
           } catch (err) {
             console.log("fs.mkdir error : " + err);
         }
-	fs.writeFile(__dirname + "/../public/temp/"+req.body.imgName,req.body.imgData,"base64",function(err){
+	fs.writeFile(__dirname + "/../public/"+req.body.imgPath+"/"+req.body.imgName,req.body.imgData,"base64",function(err){
     	if(err){
     		console.log("f:"+err);
     		res.json({success:0});
     	}
    	else{
-    		console.log("s:"+req.body.imgName);
+    		console.log("s:"+req.body.imgPath+"/"+req.body.imgName);
     		res.json({success:1});
    	}
   });
@@ -293,30 +254,83 @@ function toSearchFile(req, res){
   }); 
   return ;
 }
+
+
 function getRoomRes(req, res){
 	console.log(req.query.roomId);
 	//var roomId = req.body.data.roomId;
 	var roomId=req.query.roomId;
-  fs.readdir(__dirname + "/../public/files/room"+roomId, function (err, files) {
-  	var resPath ="files/room"+roomId;
-		if (err) {
-			res.json({result:0,files:null});
-      console.log("readdir error : " + err);
+	var resPath = req.query.pathName;
+	var tempDocPath ="temp/room"+roomId+"/"+resPath.substring(resPath.lastIndexOf("/")+1,resPath.length);
+	
+	console.log(resPath);
+	console.log(tempDocPath);
+	try{
+              fs.readdir(__dirname + "/../public/"+resPath, function (err, files) {
+  	               console.log(resPath+"~~~~~~~~~~~~~~~"+tempDocPath);
+		        if (err) {
+			       res.json({result:0,files:null});
+                              console.log("readdir error : " + err);
       
-    } 
-    else{
-    	res.json({result:1,files:files,resPath:resPath});
-    }
-	});
+                      } 
+                      else{
+    	                     res.json({result:1,
+    						files:files,
+    						resPath:resPath,
+        					tempDocPath:tempDocPath
+    						});
+                      }
+	       });
+	}
+	catch(error){
+		console.log(error);
+	}
 }
 
+function createRoomFolder(roomId){
+        fs.mkdir(__dirname + "/../public/temp/room"+roomId,777,function(err) {
+            if (err) {
+              console.log("mkdir error : " + err);
+            } else {
+              console.log("new dirname === " + __dirname + "/../public/temp/room"+roomId);
+            }
+          });  
+}
 
-exports.start = start; 
+function delRoomFolder(roomId){
+      var path = __dirname + "/../public/temp/room"+roomId;
+      var files = [];
+       if( fs.existsSync(path) ) {
+              files = fs.readdirSync(path);
+              console.log("files = " + util.inspect(files,true)); 
+              files.forEach(function(file,index){
+                      var curPath = path + "/" + file;
+                      if(fs.statSync(curPath).isDirectory()) { // recurse
+                              delRoomFolder(roomId+"/"+file);
+                      } else { // delete file
+                              fs.unlinkSync(curPath);
+                      }
+              });
+              fs.rmdirSync(path);
+      } 
+}
+
+function toStudyFile(fileName){
+      
+}
+
+var deleteFolderRecursive = function(path) {
+    
+};
+
+
 exports.toUploadFile = toUploadFile 
-exports.show = show; 
 exports.domToPng = domToPng; 
 exports.saveImg = saveImg; 
 exports.toGetAllFile = toGetAllFile;
 exports.toGetFileByType = toGetFileByType;
 exports.toSearchFile = toSearchFile;
 exports.getRoomRes = getRoomRes;
+exports.createRoomFolder = createRoomFolder;
+exports.toStudyFile = toStudyFile;
+exports.delRoomFolder = delRoomFolder;
