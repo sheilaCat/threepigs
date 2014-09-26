@@ -5,14 +5,15 @@
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/canvas.css">
+<script type="text/javascript">var session = window.sessionStorage;</script>
 <script src="js/paint.js"></script>
 <script src = "js/jquery-2.1.1.js"></script>
 <script src = "js/angular.min.js"></script>
-<script src = "js/connection.js"></script>
-<script src="/socket.io/socket.io.js"></script>
 <script src="js/webRTC.js"></script> 
+<script src="/socket.io/socket.io.js"></script>
+<script src = "js/connection.js"></script>
 <script type="text/javascript">
-	var session = window.sessionStorage;
+	
 	function shutAllPages($scope){
 		$scope.mainShow=false;
 		$scope.squareShow=false;
@@ -20,10 +21,20 @@
 		$scope.loginShow=false;
 		$scope.registerShow=false;
 		$scope.settingShow=false;
+		$scope.uploadFileShow=false;
+		$scope.lookFileShow=false;
 	}
-	function MenuController($scope){
-			$scope.mainShow=true;
- 	$scope.toggleMenu = function($where){
+	function MenuController($scope, $rootScope){
+		$scope.mainShow=true;
+
+		if(session.people != null){
+			$rootScope.people = JSON.parse(session.people);
+			connection();
+		}
+
+
+
+ 		$scope.toggleMenu = function($where){
 			if($where == 'main'){
 				shutAllPages($scope);
 				$scope.mainShow=true;
@@ -39,11 +50,31 @@
 			}else if($where == 'register'){
 				shutAllPages($scope);
 				$scope.registerShow=true;
-			}else{
+			}else if($where == 'setting'){
 				shutAllPages($scope);
 				$scope.settingShow=true;
+			}else if($where == 'uploadFile'){
+				shutAllPages($scope);
+				$scope.uploadFileShow=true;
+			}else if($where == 'lookFIle'){
+				shutAllPages($scope);
+				$scope.lookFileShow=true;
 			}
 
+		}
+
+		$scope.login = function(){
+			if(session.people ==  null){
+				$scope.toggleMenu('login')
+			}
+			else{
+				alert("ni tm yi jing deng lu l");
+			}
+		}
+
+		if( session.html != null ){
+			$scope.toggleMenu( session.html);
+			session.html = null;
 		}
 	}
 </script>
@@ -53,12 +84,13 @@
 	<div id="nav">
 		<ul class="nav nav-list">
 			<div class = "profile">
-				<a href="#" ng-click="toggleMenu('login')"><img class="profile" src="images/profile.png" /></a>
+				<a href="#" ng-click="login()"><img class="profile" src="images/profile.png" /></a>
+				<label>{{ $root.people.peopleName || '请先登录'}}</label>
 			</div>
 			<li><a href="#" ng-click="toggleMenu('main')">大厅</a></li>
 			<li><a href="#" ng-click="toggleMenu('square')">广场</a></li>
 			<li><a href="#" ng-click="toggleMenu('setting')">设置</a></li>
-			<li><a href="/pdftopng" ng-click="">File to png</a></li>
+			<li><a href="/domtopng" ng-click="">File to png</a></li>
 		</ul>
 	</div><!-- /nav-->
 	<div id="content">
@@ -68,6 +100,8 @@
 		<div ng-include="'login.html'" ng-show="loginShow"></div>
 		<div ng-include="'register.html'" ng-show="registerShow"></div>
 		<div ng-include="'setting.html'" ng-show="settingShow"></div>
+		<div ng-include="'uploadFile.html'" ng-show="uploadFileShow"></div>
+		<div ng-include="'lookFile.html'" ng-show="lookFileShow"></div>
 	</div>
 	<script src = "js/bootstrap.min.js"></script>
 </div><!-- /page -->

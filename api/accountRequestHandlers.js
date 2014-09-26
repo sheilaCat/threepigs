@@ -16,6 +16,17 @@ function toLogin(req,res){
 	console.log("end");
 	return ;
 }
+
+//ÅÐ¶Ï¸ÃÓÃ»§ÊÇ·ñµÇÂ¼
+function toChangeLoginType(peopleId){
+	async.series([
+		function(cb){ mongoDB.changeLoginType(peopleId, cb)}
+	], function(err, results) {
+   		return ;
+	});
+	console.log("end");
+	return ;
+}
 /**
 *×¢²á
 */
@@ -78,6 +89,9 @@ function toGetInvitation(req,res){
 function toGetUserFile(req,res){
 	
 }
+
+
+exports.toChangeLoginType = toChangeLoginType;
 exports.toLogin = toLogin;
 exports.toRegister = toRegister;
 exports.toLogout = toLogout;

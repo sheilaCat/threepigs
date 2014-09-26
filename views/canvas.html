@@ -24,18 +24,15 @@
 			<span id="error">如果有错误，请使用橡皮擦：</span>
 				<input id="eraser" style="width:60px;font-size:14px;"type="button" value="橡皮擦" />
 				<input id="clear" type="button" value="清除画布" style="width:80px;"/>
-			<input id="revocation" type="button" value="撤销" style="width:80px;"/>
-			<input id="imgurl" type="button" value="导出图片路径" style="width:90px;"/>
+				<input id="exportFile" type="button" value="导出文件" style="width:90px;"/>
 			</div>
 	</div>
 			<canvas id="canvas" width="740" height="420">您的浏览器不支持 canvas 标签</canvas>
-	
+			<input id="prePic" type="button" value="上一张" style="width:80px;"/>
+			<input id="nextPic" type="button" value="下一张" style="width:90px;"/>
+			<font id="pageInf" color="#ffffff"></font>
 		</div>
 		<div id="html">
 		</div>
 
 <div style="clear:both"></div>
-<script src="js/canvas.js"></script>
-<script >
-	paint.loadBg("files/face.jpg");
-</script>

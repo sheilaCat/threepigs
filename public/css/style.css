@@ -1,21 +1,26 @@
 body{background-color:#1e2025;overflow-x: hidden;}
-#nav{background-color:#363840;width: 237px;height:897px;text-align: center;position: fixed;top: 0px;}
+#nav{background-color:#363840;width: 180px;height:100%;text-align: center;position: fixed;top: 0px;}
+#nav{border-bottom-width:7px;border-bottom-color:#00aeef;border-bottom-style: solid; }
 #content h1{font-family:'黑体';font-size: 35px;color: #919191;font-weight: bold;padding-top: 70px;margin-left: 300px}
 h1>.btn{font-size: 13px;font-family: '宋体';margin-left: 15px;background-color: #00aeef;color:#fff;}
 h1>input{font-size: 13px;font-family: '宋体';color:#fff;}
-h1>input[type=file]{}
-ul li a{color: #00aeef;}
+.nav>li>a{color:gray;}
 .login{position: absolute;padding-top:20px;margin-left: 400px;}
 .login>label{color: #fff;}
 .login>button{background-color: #00aeef;display: block;width: 200px;margin-top: 20px;}
 .login>p{color:#919191;text-indent: 30px;}
-.nav>.active>a:focus,.nav>li>a:hover,.nav>li>a:visited{background-color: #1e2025;
+.nav>li>a:focus,.nav>li>a:hover,.nav>li>a:visited{background-color: #1e2025;
+			color:#00aeef;
+			border-left-width: 7px;
+			border-left-color:#00aeef;
+			border-left-style: solid;
 			-webkit-transition-duration:1s;
 			-moz-transition-duration:1s;
 			-ms-transition-duration:1s;
 			-o-transition-duration:1s;}
-.nav>li>a:hover{color:#fff;}
 .profile{padding-top: 40px;padding-bottom: 50px;}
+.profile a>img{padding-bottom:10px;display: block;margin-left:50px;max-width: 80px;}
+.profile label{color:gray;font-weight: normal;font-size: 10px;}
 .rooms{position: absolute;margin-left: 300px;padding-top: 30px}
 .btn>.room>h5,h6{color: #969696;font-size: 12px;margin-right: 20px;margin-left: 20px;line-height: 0px;}
 .btn>.room>h5{text-align: left;}
@@ -30,10 +35,8 @@ ul li a{color: #00aeef;}
 .canvas{display:block;background-color: gray;padding-top: 200px;margin-left: 300px;width: 700px;height:500px;border-radius: 10px;}
 #files{padding-top:50px;margin-left: 330px;}
 .file{width: 1000px;}
-.container >.container-fluid>.row>.col-lg-3>.file>h1{font-family:'宋体';margin-left:60px;font-size: 15px;color:#fff;font-weight: normal;text-align: left;padding-top: 0px}
-.container >.container-fluid>.row>.col-lg-3>.file>p{font-size: 13px;color:#00aeef;margin-left: 50px;}
-#content>.ng-scope>#files.container-fluid.ng-scope>.row>.col-lg-3>.file>p{font-size: 13px;color:#00aeef;margin-left: 50px;}
-#content>.ng-scope>#files.container-fluid.ng-scope>.row>.col-lg-3>.file>h1{font-family:'宋体';margin-left:60px;font-size: 15px;color:#fff;font-weight: normal;text-align: left;padding-top: 0px}
+#files > div > div> div > h1{padding-left: 0;margin-top: 0;padding-top: 0;margin-top:10px;font-family:'宋体';margin-left:60px;font-size: 15px;color:#fff;font-weight: normal;text-align: left;}
+#files > div > div> div > p{font-size: 13px;color:#00aeef;margin-left: 50px;}
 #searchForm{position:absolute;padding-left: 1020px;padding-top: 0;margin-top: 0;}
 #searchForm>.btn{background-color: #00aeef;border-color: #1e2025;display: inline;}
 select{display: block;margin-top: 20px;width: 200px;border-radius: 3px;}
@@ -56,3 +59,21 @@ select{display: block;margin-top: 20px;width: 200px;border-radius: 3px;}
 			-ms-transition-duration:1s;
 			-o-transition-duration:1s;}
 #uploadFile label{font-size: 12px;font-weight: 0;font-family: '宋体';}
+#uploadFilePage input,#uploadFilePage select{height: 25px;width: 200px;margin-left: 20px;}
+#uploadFilePage button{margin-left: 50px;color: #fff}
+#uploadFilePage button:focus,#uploadFilePage button:hover{color:#000;}
+.btn>a{text-decoration: none;color: #fff;}
+.btn>a:hover,.btn>a:focus{color:#000;}
+#uploadFilePage label{margin-top: 15px;margin-left: 20px;}
+#uploadFilePage select{padding-top: 0;margin-top: 0}
+h1>label{font-size: 20px}
+.lookFile{position: absolute;margin-left: 300px;color: #fff;}
+.file button{background-color: red;}
+#content > div:nth-child(8) > div > div > button:nth-child(6){margin-left: 20px;}
+#content > div> div > div > button{background-color: #00aeef; border-color: #fff;width: 150px;color:#fff;}
+.fileInfo{padding:20px 20px 20px 20px;background-color: #fff;box-shadow: 0px 15px 15px #111;color: #000;border-radius: 5px;}
+#content > div> div > div > button:hover{background-color: gray;color:#000;			
+			-webkit-transition-duration:1s;
+			-moz-transition-duration:1s;
+			-ms-transition-duration:1s;
+			-o-transition-duration:1s;}

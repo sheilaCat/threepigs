@@ -23,7 +23,6 @@ io.on('connection', function (socket) {
   console.log("连接一个客户端 :" + socket);
   // 打印握手信息
   // console.log(socket.handshake);
-
   // 构造客户端对象
   var client = {
     socket:socket,
@@ -37,6 +36,9 @@ io.on('connection', function (socket) {
     switch(msg.type) {
 	case 'login':
 	    // TODO Do something.
+      console.log(msg);
+      client.name = msg.peopleId;
+      accountRequestHandlers.toChangeLoginType(client.name);
 	    break;
 	case 'logout':
 	    // TODO Do something.
@@ -51,6 +53,21 @@ io.on('connection', function (socket) {
             socket.emit('creatRoom',obj);
             //广播新建房间
             socket.broadcast.emit('creatRoom',obj);
+	    break;
+	 case 'syncCanvas':
+	    // TODO Do something.
+	    // obj['data']=msg.data;
+	    //返回房间列表
+      console.log(msg.roomId);
+      socket.emit('syncCanvas',msg);
+      //广播新建房间
+      socket.broadcast.emit('syncCanvas',msg);
+	    break;
+	    //导出文件
+	case 'exportFile':
+	    // TODO Do something.
+	    obj['roomId']=msg.roomId;
+      socket.emit('exportFile',obj);
 	    break;
 	default:
 	    // TODO Do something.
@@ -89,7 +106,7 @@ io.on('connection', function (socket) {
         text:client.name,
         type:'disconnect'
       };
-
+      accountRequestHandlers.toChangeLoginType(client.name);
       // 广播用户已退出
       socket.broadcast.emit('system',obj);
       console.log(client.name + 'Disconnect');
@@ -133,12 +150,14 @@ app.get("/",commonRequestHandlers.indexPage);//获取主页
 //文件请求处理
 
 app.post("/toUploadFile",filesRequestHandlers.toUploadFile);//文件上传
-//app.get("/toSearchFile",filesRequestHandlers.toSearchFile);//搜索文件
+app.get("/toSearchFile",filesRequestHandlers.toSearchFile);//搜索文件
 //app.get("/toDeleteFile",filesRequestHandlers.toDeleteFile);//删除文件
 //app.post("/toSubmitComment",filesRequestHandlers.toSubmitComment);//提交资料评论
-app.get("/pdftopng",filesRequestHandlers.pdfToPng); //测试pdf转png
+app.get("/domtopng",filesRequestHandlers.domToPng); //测试pdf转png
 app.post("/saveImg",filesRequestHandlers.saveImg); // 保存图片
-
+app.get("/toGetAllFile", filesRequestHandlers.toGetAllFile);//获得所有文件
+app.get("/toGetFileByType", filesRequestHandlers.toGetFileByType);//根据文件类型获取文件
+app.get("/getRoomRes",filesRequestHandlers.getRoomRes);//获取房间资源
 //账户请求处理
 
 app.post("/toLogin",accountRequestHandlers.toLogin);//登陆
@@ -150,6 +169,7 @@ app.get("/toGetUserInfo",accountRequestHandlers.toGetUserInfo);//获取用户信
 app.post("/toSubmitInvitation",accountRequestHandlers.toSubmitInvitation);//提交邀请
 app.get("/toGetInvitation",accountRequestHandlers.toGetInvitation);//获取邀请提示
 app.get("/toGetUserFile",accountRequestHandlers.toGetUserFile);//获取所拥有文件
+
 
 //房间请求处理
 app.post("/toCreateNewRoom",roomRequestHandlers.toCreateNewRoom);//创建房间

@@ -1,10 +1,10 @@
 ﻿
 var paint={
-	init:function()
+	init:function(roomId)
 	{
-		this.load();
+		this.load(roomId);
 	},
-	load:function()
+	load:function(roomId)
 	{
 		this.x=[];//记录鼠标移动是的X
 		this.y=[];//记录鼠标移动是的Y
@@ -20,6 +20,10 @@ var paint={
 		this.$=function(id){return typeof id=="string"?document.getElementById(id):id;};
 		this.canvas=this.$("canvas");
 		this.imgName="";//输入文件名字
+		this.resPath="";//资源文件路径
+		this.roomId=roomId;//创建画布的房间的名字
+		this.files=[];//当前的资源文件
+		this.index = 0;//当前播放的位置
 		if (this.canvas.getContext) {
 
 		}
@@ -31,8 +35,10 @@ var paint={
 		this.cxt.lineJoin = "round";//context.lineJoin - 指定两条线段的连接方
 		this.cxt.lineWidth = 5;//线条的宽度
 		this.iptClear=this.$("clear");
-		this.revocation=this.$("revocation");
-		this.imgurl=this.$("imgurl");//图片路径按钮
+		//this.revocation=this.$("revocation");
+		this.exportFile=this.$("exportFile");//图片路径按钮
+		this.nextPic = this.$("nextPic");//下一张图片按钮
+		this.prePic = this.$("prePic");//上一张图片按钮
 		this.w=this.canvas.width;//取画布的
 		this.h=this.canvas.height;//取画布的高
 		this.touch =("createTouch" in document);//判定是否为手持设
@@ -44,12 +50,27 @@ var paint={
 	},
 	bind:function()
 	{
-
 		var t=this;
 		/*清除画布*/
 		this.iptClear.onclick=function()
 		{
-		t.clear();
+				var k=confirm('确定清除画布上面的内容？');
+				if(k){
+					t.clear();
+					var obj = {
+						'roomId':paint.roomId,
+						'type':'syncCanvas',
+						'data':{
+								'isClear':true,//是否清空
+								'x':t.x,//x坐标
+								'y':t.y,//y坐标
+								'color':t.cxt.strokeStyle,//颜色
+								'size':t.cxt.lineWidth,//粗细
+								"isEraser":t.isEraser,//是不是橡皮擦
+								}
+					};
+					socket.emit("message",obj);
+				}
 		};
 		/*鼠标按下事件，记录鼠标位置，并绘制，解锁lock，打开mousemove事件*/
 		this.canvas['on'+t.StartEvent]=function(e)
@@ -70,6 +91,7 @@ var paint={
 		t.cxt.fill();
 		t.cxt.globalCompositeOperation = "source-over";
 		*/
+		t.movePoint(_x,_y);//记录鼠标位置
 		t.resetEraser(_x,_y,touch);
 	}
 	else
@@ -91,6 +113,7 @@ var paint={
 	{
 	//if(t.Timer)clearInterval(t.Timer);
 	//t.Timer=setInterval(function(){
+	t.movePoint(_x,_y);//记录鼠标位置
 	t.resetEraser(_x,_y,touch);
 	//},10);
 	}
@@ -103,6 +126,19 @@ var paint={
 	};
 	this.canvas['on'+t.EndEvent]=function(e)
 	{
+		//var touch=t.touch ? e.touches[0] : e;
+	var obj = {
+				'roomId':paint.roomId,
+				'type':'syncCanvas',
+				'data':{
+								'isClear':false,//是否清空
+								'x':t.x,//x坐标
+								'y':t.y,//y坐标
+								'color':t.cxt.strokeStyle,//颜色
+								'size':t.cxt.lineWidth,//粗细
+								"isEraser":t.isEraser,//是不是橡皮擦
+								}
+	};
 	/*重置数据*/
 	t.lock=false;
 	t.x=[];
@@ -110,15 +146,42 @@ var paint={
 	t.clickDrag=[];
 	clearInterval(t.Timer);
 	t.Timer=null;
+		socket.emit("message",obj);
+		t.saveAsLocalImage();
 	};
-	this.revocation.onclick=function()
-	{
-	t.redraw();
+	//this.revocation.onclick=function()
+	//{
+	//t.redraw();
+	//};
+	this.prePic.onclick=function(){
+		if(t.index==0){
+			$(this).attr("disabled","disabled");
+		}
+		else{
+			t.index--;
+			$("font#pageInf").html("共："+t.files.length+" 页     "+(t.index+1)+"/"+t.files.length);
+			$(t.nextPic).removeAttr("disabled");
+			t.clear();
+			t.loadBg(t.resPath+"/"+t.files[t.index]);
+		}
+	};
+	this.nextPic.onclick=function(){
+		if(t.index==t.files.length-1){
+			$(this).attr("disabled","disabled");
+		}
+		else{
+			t.index++;
+			$("font#pageInf").html("共："+t.files.length+" 页     "+(t.index+1)+"/"+t.files.length);
+			//$(this).removeAttr("disabled");
+			$(t.prePic).removeAttr("disabled");
+			t.clear();
+			t.loadBg(t.resPath+"/"+t.files[t.index]);
+		}
 	};
 	this.changeColor();
-	this.imgurl.onclick=function()
+	this.exportFile.onclick=function()
 	{
-	t.getUrl();
+		t.download();
 	};
 	/*橡皮擦*/
 	this.$("eraser").onclick=function(e)
@@ -127,6 +190,8 @@ var paint={
 	t.$("error").style.color="red";
 	t.$("error").innerHTML="您已使用橡皮擦！";
 	};
+	t.getRes();
+	
 	},
 	loadBg:function(filePath){
 		var t = this;
@@ -134,6 +199,7 @@ var paint={
 		$("#canvas").css("background-image","url('"+filePath+"')");
 	},
 	loadPic:function(filePath){
+		
 		var t = this;
 		var img = new Image();
 		img.src=filePath;
@@ -171,7 +237,7 @@ var paint={
 	clear:function()
 	{
 		this.cxt.clearRect(0, 0, this.w, this.h);//清除画布，左上角为起
-		this.saveAsLocalImage();
+		//this.saveAsLocalImage();
 	},
 	redraw:function()
 	{
@@ -227,10 +293,15 @@ var paint={
 	}
 	}
 	},
-	getUrl:function()
+	download:function()
 	{
-	//this.$("html").innerHTML=this.canvas.toDataURL();
-		this.saveAsLocalImage();
+		//this.saveAsLocalImage();
+		var obj={
+			'type':'exportFile',
+			'roomId':this.roomId
+		}
+		socket.emit("message",obj);
+		
 	},
 	resetEraser:function(_x,_y,touch)
 	{
@@ -248,11 +319,11 @@ var paint={
 	saveAsLocalImage:function() {  
     var t = this;
     t.cxt.globalCompositeOperation="destination-over";//设置在原图下层绘制
-    t.loadPic("files/"+t.imgName);//加载背景图片
+    t.loadPic(t.resPath+"/"+t.imgName);//加载背景图片
     var img = t.canvas.toDataURL("image/png").replace("data:image/png;base64,", ""); //获取图片数据
     var params ={
    		imgData:img,
-    		imgName:"track_"+t.imgName.substring(0,t.imgName.lastIndexOf(".")) + ".png"
+    		imgName:"track_"+t.imgName.substring(0,t.imgName.lastIndexOf("/"))+".png"
     };
     //发送保存请求
     $.ajax({ 
@@ -270,5 +341,63 @@ var paint={
       			
       }  
       });
-  } 
+  },
+  syncCanvas:function(x,y,color,size,isEraser,isClear){
+  	var t = this;
+  	if(isClear){
+  		t.clear();
+  	}
+  	else{
+  		var c = t.cxt.strokeStyle;
+  		var l = t.cxt.lineWidth;
+  		t.cxt.strokeStyle = color;
+  		t.cxt.lineWidth = size;
+  		if(isEraser){
+  			for(var i= 0;i<x.length;i++){
+  				t.resetEraser(x[i],y[i],null);
+  			}
+  		}
+  		else{
+  			for(var i= 0;i<x.length;i++){
+  				t.movePoint(x[i],y[i],true);
+  			}
+  			t.drawPoint();
+  		}
+  		t.cxt.strokeStyle = c;
+  		t.cxt.lineWidth = l;
+ 	 	}
+  	t.lock=false;
+		t.x=[];
+		t.y=[];
+		t.clickDrag=[];
+		clearInterval(t.Timer);
+		t.Timer=null;
+  },
+  getRes:function(){
+  	var t = this;
+  	var params = {'roomId':t.roomId};
+		$.ajax({ 
+    	url: "/getRoomRes",
+    	type:"get",
+    	data: params,
+    	dataType:"json",
+    	success: function(msg){
+    		if(msg.result==1){
+    			alert('获取文件成功');
+    			t.resPath = msg.resPath;
+    			t.files = msg.files;
+    			console.log(t);
+    			$(t.prePic).attr("disabled","disabled");
+    			t.clear();
+					t.loadBg(t.resPath+"/"+t.files[t.index]);
+					$("font#pageInf").html("共："+t.files.length+" 页     "+(t.index+1)+"/"+t.files.length);
+    		}
+    		else{
+    			alert("获取文件失败");
+    		}
+      			
+      }  
+   });
+  }
+  
 };

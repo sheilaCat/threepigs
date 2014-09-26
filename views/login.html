@@ -17,7 +17,7 @@
 			<p>没有账号？这里<a href="#" ng-click="toggleMenu('register')">注册</a></p>
 			</div>
 		<script type="text/javascript">
-		function loginController($scope, $http){
+		function loginController($scope, $http, $rootScope){
 			$scope.login = function(){
 
 				$http.post("/toLogin", {"userAccount" : $scope.userAccount, "userPassword" : $scope.userPassword})
@@ -26,19 +26,26 @@
 	  						$scope.toggleMenu('main');
 	  						session.people = JSON.stringify(response[0]);
 	  						console.log(session);
+	  						$rootScope.people = JSON.parse(session.people);
 							connection();
 							var obj = {
+								'type' : 'login',
+								'peopleId' : $rootScope.people.peopleId
+							};
+							socket.emit('message', obj);
+							// alert("login success");
+							/*var obj = {
 								author: response[0].peopleName,
 								type:'login',
 								msg: response[0].peopleName + ' 登录了'
 							};
 							console.log(obj);
-							socket.emit("message",obj);
+							socket.emit("message",obj);*/
 	  					}
 	  					else
 	  						alert("login fail");
 	  					});
-				};
+			};
 		}
 			
 		</script>

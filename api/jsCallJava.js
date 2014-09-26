@@ -1,4 +1,5 @@
 try {
+	var zipdir = require('zip-dir');
 var java = require("java");
 java.classpath.push(__dirname + "/jar/commons-io-2.2.jar");
 java.classpath.push(__dirname + "/jar/dom2pdf.jar");
@@ -17,16 +18,12 @@ var querystring = require("querystring"),
     path = require("path"),
     formidable = require("formidable");
 
-try {
-  var pdfutils = require('pdfutils').pdfutils;
-} catch (error) {
-  console.log("require pdfutils error: " + error);
-}
+
 var util = require('util');  
+
 
 function dom2pdf(filePath, callback) {
 	var arr = filePath.split("/");
-	//var fileName = filePath.substring(filePath.lastIndexOf("/"),filePath.lastIndexOf("."));
 	var fileRoot = filePath.substring(0,filePath.lastIndexOf("/"));
 
 console.log("fileRoot = " + fileRoot);
@@ -53,81 +50,40 @@ console.log("file = " + file);
 	}
 	if (fileName[1] == "pdf" || fileName[1] == "PDF") {
 		
-		callback(null,pdfToPng(filePath, 
+		// callback(null,pdfToPng(filePath, 
+		// 		fileName[0], 
+		// 		fileRoot+"/"+fileName[0] + "/"
+		// 	));
+		callback(null,filePath, 
 				fileName[0], 
-				fileRoot+"/"+fileName[0] + "/"
-			));
-		/*return pdfToPng(filePath, 
-				fileName[0], 
-				fileRoot+"/"+fileName[0] + "/"
-			);*/
+				fileRoot+"/"+fileName[0] + "/");
 		return;
 	}
 	var pdfConverter = java.import('com.converter.pdfConverter.OpenOfficeDomConverter');
 	var dom2pdf = new pdfConverter("/opt/openoffice4",8100);
 	dom2pdf.convertFile(filePath ,
-			fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", function(err,result){
-				var pngpath;
-				if (result == true) {
-					pngpath  = pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
-							fileName[0],
-							fileRoot+"/"+fileName[0] + "/"
-						);
-					console.log("soce path ==== " + filePath);
-					console.log("pdf path === " + fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf");
-					callback(null,pngpath);
-					return;
-				} else {
-					console.log("change fail!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					callback(null,pngpath);
-					return;
-				}
-			});
-	
-	// async.series([
-	// 	function(cb) { 
-	//  		var pdfConverter = java.import('com.converter.pdfConverter.OpenOfficeDomConverter');
-	// 		var dom2pdf = new pdfConverter("/opt/openoffice4",8100);
-	// 		dom2pdf.convertFile(filePath ,
-	// 			fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf");
-	// 	}
-	// 	], 
-	// 	function(err, results) {
-	// 		for (var i in  results) {
-	// 			console.log("result in jsCallJava " + i + " ======= " + results[i]);
-	// 		}
-	// 		var result = pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
-	// 			fileName[0],
-	// 			fileRoot+"/"+fileName[0] + "/"
-	// 		);
-	// 		callback(null,result);
-	// 		return;
-	// 	}
-	// 	//console.log(results[0]);
-	// );
-	
-	//callback(null,"change fail.");
-	/*return pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
-			fileName[0],
-			fileRoot+"/"+fileName[0] + "/"
-		);*/
-	//return;
+		fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", function(err,result){
+			var pngpath;
+			if (result == true) {
+				// pngpath  = pdfToPng (fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
+				// 		fileName[0],
+				// 		fileRoot+"/"+fileName[0] + "/"
+				// 	);
+				console.log("soce path ==== " + filePath);
+				console.log("pdf path === " + fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf");
+				callback(null,fileRoot+"/"+fileName[0] + "/" + fileName[0] + ".pdf", 
+						fileName[0],
+						fileRoot+"/"+fileName[0] + "/");
+				return;
+			} else {
+				console.log("change fail!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				callback("Error",null, null, null);
+				return;
+			}
+		}
+	);
 }
 
-function pdfToPng (filePath, fileName, toPath) {
-	try {
-		pdfutils(filePath, function(err, doc) {
-			var i;
-			for (i = 0; i < doc.length; i++) {
-				doc[i].asPNG({maxWidth: 1200, maxHeight: 1200}).toFile(toPath + fileName + i + ".png");
-				debugger;
-			}
-		});
-		return toPath;
-	} catch (error) {
-		console.log("pdfutils error : " + error);
-		return "";
-  	 }
-}
+
 
 exports.dom2pdf = dom2pdf; 

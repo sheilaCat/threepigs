@@ -1,10 +1,27 @@
 
-		<h1>房间
+<div  ng-controller="roomFileController">	
+<h1>房间 
+<label>{{$root.room.roomName}}</label>
+<script type="text/javascript">
+	function roomFileController($scope, $http){
+
+		$scope.getAllFile = function(){
+			$http.get("/toGetAllFile").success(function(response) {$scope.fileList = response;});
+		}
+
+		$scope.getFileByType = function(fileType){
+			$http.get("/toGetFileByType?fileType=" + fileType).success(function(response) {$scope.fileList = response;});
+		}
+
+		$scope.$watch('key', function(){
+			$http.get("/toSearchFile?key=" + $scope.key).success(function(response) {$scope.fileList = response;});
+		});
+	}
 
 
+</script>
 
-<!-- Button trigger modal -->
-<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal">
+<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getAllFile()">
  打开在线文件
 </button>
 
@@ -15,27 +32,19 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title" id="myModalLabel">在线文件选择</h4>
-       	<input type="text" class="form-control" id="search" placeholder="输入关键字查找/凭ID号查找"/>
+       	<input type="text" class="form-control" id="search" placeholder="输入关键字查找/凭ID号查找" ng-model="key"/>
       </div>
       <div class="modal-body">
       	 <div class="classify">
       	 	<ul>
-      	 	<li><a href="">分类</a></li>
-      	 	<li><a href="">编译原理</a></li>
-      	 	<li><a href="">计算机网络</a></li>
-      	 	</ul>
+      	 	<li><a href="" ng-click="getAllFile()">分类</a></li>
+      	 	<li><a href="" ng-click="getFileByType('高数')">高数</a></li>
+      	 	<li><a href="" ng-click="getFileByType('数据结构')">数据结构</a></li>
+      	 	</ul> 
       	 </div>
       	 <div class="searchRes">
       	 	<ul>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
-      	 	<li><label><input type="radio" name="chosen">编译原理PDF</label></li>
+      	 	<li ng-repeat="file in fileList"><label><input type="radio" name="chosen">{{file.fileName}}</label></li>
       	 	</ul>
 
       	 </div>
@@ -51,15 +60,16 @@
 		<button type="button" class="btn btn-xs" type="file">打开本地文件</button>
 <div class="openFile">
 		<form action="/toUploadFile" enctype="multipart/form-data" method="post">
-       <input type="file" name="upload" id="exampleInputFile" multiple="multiple">
-       <button type="submit" id="uploadFile" value="Upload File" name="upload" class="btn btn-xs"><label>查看文件</label></button>
+                            <input type="file" name="upload" id="exampleInputFile" multiple="multiple">
+                            <button type="submit" id="uploadFile" value="Upload File" name="upload" class="btn btn-xs"><label>查看文件</label></button>
 		</form>
 
      	<video height="150" id="localVideo"></video>
-        <div id="remotesVideos"></div>
+        <div height="150" id="remotesVideos"></div>
 		</div>
 		</h1>
 
 		<div ng-include="'canvas.html'"></div>
 
 		<!--/end rooms -->
+</div>

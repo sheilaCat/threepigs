@@ -31,7 +31,16 @@
 </h1>
 			<div class="rooms">
 			<script type="text/javascript">
-				function roomController($scope, $http){
+
+				function delay(){
+					setTimeout('what()',10000);
+				}
+				function what(){
+					$('#remotesVideos video').css('width','280px');
+					$('#remotesVideos video').css('height','150px');
+				}
+
+				function roomController($scope, $http, $rootScope){
 					$http.get("/toGetAllRoom")
 		  				.success(function(response) {$scope.roomList = response;});
 
@@ -57,8 +66,11 @@
 											type:'creatRoom',
 											msg:'创建了一个房间'
 										};
-										alert("创建了一个房间");
+										
 										socket.emit("message",obj);
+										$rootScope.room = response[response.length - 1];
+										$scope.toggleMenu('room');
+										
 			  						}
 			  						else{
 			  							alert("创建房间失败");
@@ -74,14 +86,20 @@
 		  				if(session.people == null){
 		  					$scope.toggleMenu('login');
 		  				}
+		  				else if( session.roomId != roomId  && session.roomId != null){
+		  					alert('ni yijing jia ru fj l ' + session.roomId);
+		  				}
 		  				else{
+		  					session.roomId=roomId;
+		  					paint.init(session.roomId);
+		  					paint.loadBg("files/canvas.png");
 		  					var people = JSON.parse(session.people);
 		  					console.log(roomId);
 		  					$http.post("/toJoinRoom",{"peopleId" : people.peopleId, "roomId" : roomId })
 			  					.success(function(response) {
-			  						if(response == "success"){
+			  						if(response != null){
 			  					// 		$scope.roomList = response;
-
+			  							$rootScope.room = response[0];
 										// var obj = {
 										// 	author:'System',
 										// 	type:'creatRoom',
@@ -90,7 +108,7 @@
 										// alert("创建了一个房间");
 										// socket.emit("message",obj);
 										$scope.toggleMenu('room');
-										alert('加入了' + roomId + '号房间');
+										// alert('加入了' + roomId + '号房间');
 
 
 										var webrtc = new SimpleWebRTC({
@@ -106,6 +124,7 @@
 									      // you can name it anything
 									      webrtc.joinRoom(roomId + '');
 									    });
+										delay();
 			  						}
 			  						else{
 			  							alert("加入房间失败");

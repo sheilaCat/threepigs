@@ -34,6 +34,15 @@
 			</div>
 		<script type="text/javascript">
 		function registerController($scope, $http){
+			$scope.user = {
+				'Account' : '',
+				'Password' :  '',
+				'Name' : '',
+				'Age' : '',
+				'Sex' : '' ,
+				'Email' : '',
+				'Tel' : ''
+			};
 			$scope.incomplete = true;
 			$scope.error = true;
 			$scope.$watch('user.Account',function() {$scope.test();});

@@ -5,6 +5,7 @@ var MongoClient = require('mongodb').MongoClient;
 var db;
 var SUCCESS = "success";
 var FAIL = "fail";
+var util = require('util');  
 // Initialize connection once
 MongoClient.connect("mongodb://localhost:27017/threepigs", function(err, database) {
     if(err) throw err;
@@ -19,11 +20,13 @@ function MongoDB(){
 
     //查询指定表所有内容
     this.findAll = function(tableName, callback){
-         db.collection(tableName).find({}).toArray(function(err, docs) {
-                if (err) throw err;
-                //console.log(docs);
-                callback(null, docs);
-            });
+        db.collection(tableName).find({},{sort: {'roomId': 1, 'fileId' : 1}}).toArray(function(err, docs) {
+            if (err) throw err;
+            //console.log(docs);
+            callback(null, docs);
+            return ;
+        });
+        return ;
     }
 
     //插入一个people对象，如果该对象存在则返回 fail
@@ -64,13 +67,16 @@ function MongoDB(){
                         console.log('index add ===>' + SUCCESS);                        
                     });
 		    callback(null, SUCCESS);
+            return ;
                 });
             }
             else{
                 console.log('userAccount is not null');
 		callback(null, FAIL);
+        return ;
             }
         });
+    return ;
     }
 
     
@@ -87,13 +93,26 @@ function MongoDB(){
                 console.log('userAccount is null');
 
                 callback(null, FAIL);
+                return ;
             }
             else{
-                console.log('userAccount is  not null');
-                //console.log(docs);
-                callback(null, docs);
+
+                if(docs[0].peopleType =='login'){
+                    console.log('userAccount is null');
+
+                    callback(null, FAIL);
+                    return ;
+                }
+                else{
+                    console.log('userAccount is  not null');
+                    //console.log(docs);
+                    callback(null, docs);
+                }
+                
+                return ;
             }
         });
+        return ;
     }
 
 
@@ -107,26 +126,42 @@ function MongoDB(){
         // "fileTimes" : 0
   //   };
     this.uploadFile = function(peopleId, Object){
+        //console.log("peopleId = " + util.inspect(peopleId,true)); 
+        var temp = {};
+        for(var n in Object){  
+            var name=n;//属性名称   
+            var value=Object[n];//属性对应的值   
+            temp[name]= value;  
+        } 
+        temp.peopleId = peopleId;
 
         db.collection('index').find({}).toArray(function(err, docs) {           
             maxFileId = docs[0].fileId;
             Object.fileId = maxFileId + 1;
             console.log('fileId maxID is = ' + Object.fileId);
-
+            console.log("peopleId = " + util.inspect(peopleId,true)); 
             db.collection('people').find({'peopleId': peopleId}).toArray(function(err, docs) {
-                if (err) throw err;
-                console.log();
+                if (err) console.log("err = " + util.inspect(err,true)); 
+                console.log("docs = " + util.inspect(docs,true)); 
                 if( docs[0].uploadFileList == null ){
                     docs[0].uploadFileList = [];
                 }
                 docs[0].uploadFileList.push(Object);
                 db.collection('people').update({'peopleId': peopleId}, {$set: {uploadFileList: docs[0].uploadFileList}}, {w:1,upsert:true}, function(err) {
                     if (err) console.warn(err.message);
-                        console.log('people update ===>' + SUCCESS);
+                    console.log('people update ===>' + SUCCESS);
                 });
 
+                temp.peopleName = docs[0].peopleName;
+                db.collection('file').insert( temp , {w:1}, function(err, objects) {
+                if (err) throw err;
+                console.log('file insert ===>' + SUCCESS);
+                });
                 console.log(docs);
             });
+
+
+            
 
                     
             db.collection('index').update( {'fileId' : maxFileId} ,{$set: {'fileId': maxFileId + 1}},  {w:1}, function(err, docs) {
@@ -315,13 +350,15 @@ function MongoDB(){
                 console.log('roomId add===>' + SUCCESS);                        
             });
             callback(null, SUCCESS);
+            return ;
         });
+        return ;
     }
 
     //用户加入房间
     this.addRoom = function(peopleId, roomId, callback){
-
-
+        console.log(roomId);
+        console.log(peopleId);
         db.collection('room').find({'roomId' : roomId}).toArray(function(err, docs) {
             if (err) throw err;
             var temp = {
@@ -331,10 +368,16 @@ function MongoDB(){
             docs[0].peopleList.push(temp);
             db.collection('room').update( {'roomId' : roomId} ,{$set: {'peopleList': docs[0].peopleList}},  {w:1}, function(err, docs) {
                  if (err) throw err;
-                 console.log('peopleList add===>' + SUCCESS);                        
+                 console.log('peopleList add===>' + SUCCESS);
+                 db.collection('room').find({'roomId' : roomId}).toArray(function(err, docs) {
+                    if (err) throw err; 
+
+                    callback(null, docs);
+                    return ;
             });
-             callback(null, SUCCESS);
-            return SUCCESS;
+
+            });
+            
 
         });
     }
@@ -476,20 +519,57 @@ function MongoDB(){
 
     //根据文件类型获取响应文件列表
 
-    this.findFileByType = function (fileType){
-        db.collection('people').find({'uploadFileList.fileType' : fileType}, {'uploadFileList' : 1}).toArray(function(err, docs){
+    this.findFileByType = function (fileType, callback){
+        db.collection('file').find({'fileType' : fileType}).toArray(function(err, docs){
             if(err) throw err;
-            var temp = [];
-            for( i in docs){
-            	for( j in docs[i].uploadFileList){
-            		temp.push(docs[i].uploadFileList[j]);
-            	}
-            }
-            return temp;
+            
+            callback(null, docs);
+            return ;
         });
+        return ;
+    }
+
+    this.findFileByKey = function(key, callback){
+        db.collection('file').find({'fileName' : {$regex: key} }).toArray(function(err, docs){
+            if(err) throw err;
+            callback(null, docs);
+            return ;
+        });
+        return ;
     }
 
 
+
+    this.changeLoginType = function(peopleId, callback){
+        db.collection('people').find({'peopleId' : peopleId }, {'peopleType': 1}).toArray(function(err, docs){
+            if(err) throw err;
+            try{
+                if(docs[0].peopleType == null)
+                docs[0].peopleType = 'logout';
+            }catch(err){
+                docs[0].peopleType = 'logout';
+            }
+            
+            
+
+            if( docs[0].peopleType =='logout' ){
+                db.collection('people').update({'peopleId': peopleId}, {$set: {'peopleType': 'login'}}, {w:1,upsert:true}, function(err) {
+                    if (err) console.warn(err.message);
+                    console.log('people login ===>' + SUCCESS);
+                });
+            }
+            else{
+                db.collection('people').update({'peopleId': peopleId}, {$set: {'peopleType': 'logout'}}, {w:1,upsert:true}, function(err) {
+                    if (err) console.warn(err.message);
+                    console.log('people logout ===>' + SUCCESS);
+                });
+            }
+             callback(null, SUCCESS);
+            return ;
+        });
+       return ;
+
+    }
 
 }
 module.exports = MongoDB;
