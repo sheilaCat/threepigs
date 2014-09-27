@@ -1,10 +1,49 @@
 ﻿
 var paint={
-	init:function(roomId)
+	init:function(roomId,flag)//flag是标识是创建还是加入  flag = true 创建，false 加入
 	{
-		this.load(roomId);
+		//console.log(flag);
+		this.roomId = roomId;
+		//初始化本地数据
+		this.load();
+		//如果是创建的房间,就初始化默认数据
+		if(flag){
+				//alert("clear");
+				this.clear();
+				this.loadBg(this.resPath+"/"+this.files[this.index]);
+		}
+		//如果是加入房间，就向服务器请求数据
+		/*
+		var obj = {
+					roomId:this.roomId,
+					type:'syncCanvas',
+					data:null//data为空表示没有可用数据发送，需要同步
+		};
+		//当有数据时
+		需要通知
+		var obj = {
+					roomId:this.roomId,
+					type:'syncCanvas',
+					data:{
+								resPath:this.resPath,
+								tempDocPath:this.tempDocPath,
+								files:this.files,
+								index:this.index
+								}
+		};
+		
+		*/
+		//要求返回resPath，tempDocPath，files，index
+		else{
+			var obj = {
+					'roomId':this.roomId,
+					'type':'syncCanvas',
+					'data':null//data为空表示没有可用数据发送，需要同步
+					};
+			socket.emit("message",obj);
+		}
 	},
-	load:function(roomId)
+	load:function()
 	{
 		this.x=[];//记录鼠标移动是的X
 		this.y=[];//记录鼠标移动是的Y
@@ -19,11 +58,9 @@ var paint={
 		this.fontWeight=[1,3,5];
 		this.$=function(id){return typeof id=="string"?document.getElementById(id):id;};
 		this.canvas=this.$("canvas");
-		this.imgName="canvas.png";//输入文件名字  默认是canvas.png
 		this.resPath="files";//资源文件保存路径   默认是file
-		this.tempDocPath="temp/room"+roomId+"/canvas";//临时文件保存路径  默认是
-		this.roomId=roomId;//创建画布的房间的名字
-		this.files=[];//当前的资源文件
+		this.tempDocPath="temp/room"+this.roomId+"/canvas";//临时文件保存路径  默认是
+		this.files=["canvas.png"];//当前的资源文件
 		this.index = 0;//当前播放的位置
 		if (this.canvas.getContext) {
 
@@ -37,10 +74,10 @@ var paint={
 		this.cxt.lineWidth = 1;//线条的宽度
 		this.iptClear=this.$("clear");
 		//this.revocation=this.$("revocation");
-		this.exportFile=this.$("exportFile");//图片路径按钮
+		this.exportFile=this.$("exportFile");//导出文件
 		this.nextPic = this.$("nextPic");//下一张图片按钮
 		this.prePic = this.$("prePic");//上一张图片按钮
-		this.w=this.canvas.width;//取画布的
+		this.w=this.canvas.width;//取画布的宽
 		this.h=this.canvas.height;//取画布的高
 		this.touch =("createTouch" in document);//判定是否为手持设
 		this.StartEvent = this.touch ? "touchstart" : "mousedown";//支持触摸式使用相应的事件替
@@ -59,19 +96,8 @@ var paint={
 				if(k){
 					t.clear();
 					t.saveAsLocalImage();
-					var obj = {
-						'roomId':paint.roomId,
-						'type':'syncCanvas',
-						'data':{
-								'isClear':true,//是否清空
-								'x':t.x,//x坐标
-								'y':t.y,//y坐标
-								'color':t.cxt.strokeStyle,//颜色
-								'size':t.cxt.lineWidth,//粗细
-								"isEraser":t.isEraser,//是不是橡皮擦
-								}
-					};
-					socket.emit("message",obj);
+					t.sendData(true);
+					
 				}
 		};
 		/*鼠标按下事件，记录鼠标位置，并绘制，解锁lock，打开mousemove事件*/
@@ -128,28 +154,16 @@ var paint={
 	};
 	this.canvas['on'+t.EndEvent]=function(e)
 	{
-		//var touch=t.touch ? e.touches[0] : e;
-	var obj = {
-				'roomId':t.roomId,
-				'type':'syncCanvas',
-				'data':{
-								'isClear':false,//是否清空
-								'x':t.x,//x坐标
-								'y':t.y,//y坐标
-								'color':t.cxt.strokeStyle,//颜色
-								'size':t.cxt.lineWidth,//粗细
-								"isEraser":t.isEraser,//是不是橡皮擦
-								}
-	};
-	/*重置数据*/
-	t.lock=false;
-	t.x=[];
-	t.y=[];
-	t.clickDrag=[];
-	clearInterval(t.Timer);
-	t.Timer=null;
-		socket.emit("message",obj);
+    t.sendData(false);
+		/*重置数据*/
+		t.lock=false;
+		t.x=[];
+		t.y=[];
+		t.clickDrag=[];
+		clearInterval(t.Timer);
+		t.Timer=null;
 		t.saveAsLocalImage();
+		
 	};
 	//this.revocation.onclick=function()
 	//{
@@ -169,6 +183,8 @@ var paint={
 			t.loadBg(t.resPath+"/"+t.files[t.index]);
 			//t.saveAsLocalImage();
 			t.loadPic(t.tempDocPath+"/"+t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png");
+			t.saveAsLocalImage();
+			t.sendData(false);
 		}
 	};
 	this.nextPic.onclick=function(){
@@ -185,6 +201,8 @@ var paint={
 			t.loadBg(t.resPath+"/"+t.files[t.index]);
 			//t.saveAsLocalImage();
 			t.loadPic(t.tempDocPath+"/"+t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png");
+			t.saveAsLocalImage();
+			t.sendData(false);
 		}
 	};
 	this.changeColor();
@@ -200,52 +218,27 @@ var paint={
 	t.$("error").innerHTML="您已使用橡皮擦！";
 	};
 	
-	//t.getRes("files/ToolType/face");
-	t.loadBg(t.resPath+"/"+t.imgName);
 	
 	},
 	loadBg:function(filePath){
 		var t = this;
 		//如果是同一个文件，就不加载
-		if(t.imgName == filePath.substring(filePath.lastIndexOf("/")+1))
-		{
-		}
-		else{
-			var img = new Image();
-			img.src = filePath;
-			img.onload = function(){
+		var img = new Image();
+		img.src = filePath;
+		img.onload = function(){
 				t.canvas.width = img.width;
 				t.canvas.height = img.height;
-			};
-			t.imgName = filePath.substring(filePath.lastIndexOf("/")+1);
-			$("#canvas").css("background-image","url('"+filePath+"')");
-			var obj = {
-				'roomId':t.roomId,
-				'type':'syncCanvas',
-				'data':{
-								'isClear':false,//是否清空
-								'x':t.x,//x坐标
-								'y':t.y,//y坐标
-								'color':t.cxt.strokeStyle,//颜色
-								'size':t.cxt.lineWidth,//粗细
-								"isEraser":t.isEraser,//是不是橡皮擦
-								"bgPath":filePath
-								}
-			};
-			socket.emit("message",obj);
-		}
-		
+		};
+		$("#canvas").css("background-image","url('"+filePath+"')");
 	},
 	loadPic:function(filePath){
-		
 		var t = this;
 		var img = new Image();
 		img.src=filePath;
 		img.onload=function(){
-    		t.cxt.drawImage(img,0,0);
-    		t.cxt.globalCompositeOperation = "source-over";    
+    			t.cxt.drawImage(img,0,0);
+    			t.cxt.globalCompositeOperation = "source-over";
     };
-		t.cxt.drawImage(img,0,0);
 	},
 	movePoint:function(x,y,dragging)
 	{
@@ -355,14 +348,14 @@ var paint={
 	t.cxt.globalCompositeOperation = "source-over";
 	},
 	//保存文件
-	saveAsLocalImage:function() {  
+saveAsLocalImage:function() {  
     var t = this;
     t.cxt.globalCompositeOperation="destination-over";//设置在原图下层绘制
-    t.loadPic(t.resPath+"/"+t.imgName);//加载背景图片
+    t.loadPic(t.resPath+"/"+t.files[t.index]);//加载背景图片
     var img = t.canvas.toDataURL("image/png").replace("data:image/png;base64,", ""); //获取图片数据
     var params ={
    		imgData:img,
-    	imgName:t.imgName.substring(0,t.imgName.lastIndexOf("."))+".png",
+    	imgName:t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png",
     	imgPath:t.tempDocPath
     };
     //发送保存请求
@@ -373,55 +366,105 @@ var paint={
     	dataType:"json",
     	success: function(msg){
     		if(msg.success==1){
-    			console.log('ok');  
+    			console.log('ok'); 
+    			//保存成功则同步数据
+//    				var obj = {
+//						'roomId':t.roomId,
+//						'type':'syncCanvas',
+//						'data':{
+//								'resPath':t.resPath,
+//								'tempDocPath':t.tempDocPath,
+//								'files':t.files,
+//								'index':t.index
+//								}
+//						};
+//					socket.emit("message",obj);
     		}
     		else{
-    			console.log('fail');  
-    		}
-      			
+    			console.log('fail');
+    			alert("数据保存失败");  
+    		} 			
       }  
       });
   },
-  syncCanvas:function(x,y,color,size,isEraser,isClear,bgPath){
+  syncCanvas:function(json){
+  	
   	var t = this;
-  	if(isClear){
-  		t.clear();
+  	console.log(t);
+  	var syncData = json.data;
+  	
+  	//如果返回数据为空,就代表有人要请求数据，需要调用一次同步请求
+  	if(syncData==null){
+  		//alert("null");
+  		t.sendData(false);
   	}
+  	//如果不为空,就加在返回数据
   	else{
-  		if(bgPath!=null){
-  			t.loadBg(bgPath);
-  		}
-  		var c = t.cxt.strokeStyle;
-  		var l = t.cxt.lineWidth;
-  		t.cxt.strokeStyle = color;
-  		t.cxt.lineWidth = size;
-  		if(isEraser){
-  			for(var i= 0;i<x.length;i++){
-  				t.resetEraser(x[i],y[i],null);
+  		var trackData = json.data.datas;
+  		//console.log(trackData);
+  		//获取数据
+  		//如果是同一张图片
+  		if(t.files[t.index]==syncData.files[syncData.index]){
+  			
+  			if(trackData.isClear){
+  				t.clear();
   			}
+  			else{
+  				//空白画布同步，直接加载前景
+  				if(trackData.x.length==0)
+  				{
+  						//alert(syncData.tempDocPath+"/"+t.files[t.index]);
+  						t.loadPic(syncData.tempDocPath+"/"+t.files[t.index]);//加载前景
+  				}
+  				else{
+  					var c = t.cxt.strokeStyle;
+  					var l = t.cxt.lineWidth;
+  					t.cxt.strokeStyle = trackData.color;
+  					t.cxt.lineWidth = trackData.size;
+  					if(trackData.isEraser){
+  						for(var i= 0;i<trackData.x.length;i++){
+  							t.resetEraser(trackData.x[i],trackData.y[i],null);
+  						}
+  					}
+  					else{
+  						for(var i= 0;i<trackData.x.length;i++){
+  							t.movePoint(trackData.x[i],trackData.y[i],true);
+  						}
+  						t.drawPoint();
+  					}
+  					t.cxt.strokeStyle = c;
+  					t.cxt.lineWidth = l;
+ 	 				}
+  				t.lock=false;
+					t.x=[];
+					t.y=[];
+					t.clickDrag=[];
+					clearInterval(t.Timer);
+					t.Timer=null;
+  			}		
   		}
   		else{
-  			for(var i= 0;i<x.length;i++){
-  				t.movePoint(x[i],y[i],true);
-  			}
-  			t.drawPoint();
-  		}
-  		t.cxt.strokeStyle = c;
-  		t.cxt.lineWidth = l;
- 	 	}
-  	t.lock=false;
-		t.x=[];
-		t.y=[];
-		t.clickDrag=[];
-		clearInterval(t.Timer);
-		t.Timer=null;
+  			//alert("new");
+  			t.resPath = syncData.resPath;
+  			t.tempDocPath = syncData.tempDocPath;
+  			t.files = syncData.files;
+  			t.index = syncData.index;
+  			//alert("t.resPath="+t.resPath);
+  			//alert("t.tempDocPath="+t.tempDocPath);
+  			t.loadBg(t.resPath+"/"+t.files[t.index]);//加载背景
+  			t.loadPic(t.tempDocPath+"/"+t.files[t.index]);//加载前景
+  			$("font#pageInf").html("共："+t.files.length+" 页     "+(t.index+1)+"/"+t.files.length);//显示页码信息
+  		}  		
+  	}
+  	//end
+  	
   },
   getRes:function(pName){
   	var t = this;
   	var pathName = pName.substring(0,pName.lastIndexOf("."));
   	var params = {'roomId':t.roomId,
   								'pathName':pathName};
-  	console.log(params);
+  	//console.log(params);
 		$.ajax({ 
     	url: "/getRoomRes",
     	type:"get",
@@ -433,26 +476,59 @@ var paint={
     			t.resPath = msg.resPath;
     			t.tempDocPath = msg.tempDocPath;
     			t.files = msg.files;
+    			t.index = 0;
+    			$(t.prePic).attr("disabled","disabled");
     			if(t.files.length==0){
     				alert("无文件");
+    				t.resPath="files";
+    				t.tempDocPath="temp";
+    				t.files=["canvas.png"];
     			}
-    			console.log(t);
-    			$(t.prePic).attr("disabled","disabled");
-    			t.clear();
-					t.loadBg(t.resPath+"/"+t.files[t.index]);
-					$("font#pageInf").html("共："+t.files.length+" 页     "+(t.index+1)+"/"+t.files.length);
+    			else{
+    				$("font#pageInf").html("共："+t.files.length+" 页     "+(t.index+1)+"/"+t.files.length);
+    			}
+    			
+    			
+    			
+					
     		}
     		else{
     			alert("获取文件失败");
-    			t.files=[];
     			t.resPath="files";
     			t.tempDocPath="temp";
-    			t.loadBg(t.resPath+"/canvas.png");
-    			$("font#pageInf").html("未加载任何数据!");
+    			t.files=["canvas.png"];
+    			t.index = 0;
+    			$("font#pageInf").html("空白画布!");
     		}
-      	t.saveAsLocalImage();
+    		t.clear();
+    		t.loadBg(t.resPath+"/"+t.files[t.index]);
+    		t.saveAsLocalImage();
+    		t.sendData(false);
       }  
    });
-  }
+  },
+  sendData:function(flag){
+  	var t = this;
+  	console.log(t);
+  	var obj = {
+				'roomId':t.roomId,
+				'type':'syncCanvas',
+				'data':{
+						'resPath':t.resPath,
+						'tempDocPath':t.tempDocPath,
+						'files':t.files,
+						'index':t.index,
+						'datas':{
+										'isClear':flag,//是否清空
+										'x':t.x,//x坐标
+										'y':t.y,//y坐标
+										'color':t.cxt.strokeStyle,//颜色
+										'size':t.cxt.lineWidth,//粗细
+										"isEraser":t.isEraser,//是不是橡皮擦
+										}
+							}
+					};
+			socket.emit("message",obj);
+	 }
   
 };

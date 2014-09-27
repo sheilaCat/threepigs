@@ -59,13 +59,14 @@
 	}
 </script>
 		<h1>设置</h1>
-		<form role="form">
+		<form role="form" action='/toSubmitUserHead' method='post' enctype="multipart/form-data">
 		<div class="login">
 			<label>头像上传：</label>
-			<input type="file" />
-			<div class="profile"><img class="profile" src="images/profile.png"></div>
-			<label for="username">	用户名：</label>
-			<input type="text" class="form-control" id="username" placeholder="Enter username" disabled value={{$root.people.user.userAccount}} />
+			<input type="file" name="head"/>
+			<div class="profile"><img class="profile" src="head/{{$root.people.user.userAccount}}_head"></div>
+			<label for="username">用户名：</label>
+			<input type="text" class="form-control" name="username" id="username" placeholder="Enter username" disabled value={{$root.people.user.userAccount}} />
+			<input type="hidden" name="username" value={{$root.people.user.userAccount}} />
 			<label for="psd">旧密码：</label>
 			<input type="password" class="form-control" id="psd" placeholder="Enter Password" ng-model="oldPass" />
 			<label for="new-psd">新密码</label>
@@ -83,7 +84,7 @@
 			<input type="text" class="form-control" id="age" placeholder="{{$root.people.peopleEmail || 'xxx@xxx.xxx'}}" ng-model="email" />
 			<label for="qq">qq：</label>
 			<input type="text" class="form-control" id="qq" placeholder="{{$root.people.peopleQq || 'xxxxxx'}}" ng-model="qq" />
-			<button type="button" class=" btn" ng-click="toSetting()">确认修改</button>
+			<button type="submit" class=" btn" ng-click="toSetting()">确认修改</button>
 		</div>
 		</form>
 </div>

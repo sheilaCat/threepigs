@@ -1,6 +1,8 @@
 var MongoDB = require('../dao/MongoDB');
 var mongoDB = new MongoDB();
 var async = require('async');
+var fs = require("fs");
+var util = require("util");
 
 /**
 *登陆
@@ -27,11 +29,14 @@ function toLogin(req,res){
 // 	console.log("end");
 // 	return ;
 // }
+
 /**
 *注册
 */
 function toRegister(req,res){
-	console.log("req.body :"+req.body);
+	console.log("req.body :"+util.inspect(req.body,true));
+	fs.writeFileSync( __dirname + "/../public/head/" + req.body.user.userAccount + "_head", 
+		fs.readFileSync(__dirname + "/../public/head/_head"));
 	async.series([
 		function(cb){ mongoDB.insertPeople(req.body,cb)}
 	], function(err, results) {
@@ -48,18 +53,22 @@ function toRegister(req,res){
 	return ;
 	
 }
+
 /**
 *登出
 */
 function toLogout(req,res){
 	
 }
+
 /**
 *检查用户名是否存在
 */
 function toCheckUserIsExist(req,res){
 	
-}/**
+}
+
+/**
 *提交用户信息
 */
 function toSubmitUserInfo(req,res){
@@ -74,24 +83,45 @@ function toSubmitUserInfo(req,res){
    		return ;
 	});
 }
+
+/**
+*提交用户头像
+*/
+function toSubmitUserHead(req,res){
+	console.log("request = " + util.inspect(req,true));
+	fs.writeFileSync( __dirname + "/../public/head/" + req.body.username + "_head", fs.readFileSync(req.files.head.path) );
+	fs.unlink(req.files.head.path, function (error) {
+		// body...
+		if (error) {
+			console.log("unlink error : " = error);
+		}
+	});
+	res.redirect("/hall.html");
+	res.end();
+	return;
+}
+
 /**
 *获取用户信息
 */
 function toGetUserInfo(req,res){
 	
 }
+
 /**
 *提交邀请
 */
 function toSubmitInvitation(req,res){
 	
 }
+
 /**
 *获取邀请提示
 */
 function toGetInvitation(req,res){
 	
 }
+
 /**
 *
 **/
@@ -106,6 +136,7 @@ exports.toRegister = toRegister;
 exports.toLogout = toLogout;
 exports.toCheckUserIsExist = toCheckUserIsExist;
 exports.toSubmitUserInfo = toSubmitUserInfo;
+exports.toSubmitUserHead = toSubmitUserHead;
 exports.toGetUserInfo = toGetUserInfo;
 exports.toSubmitInvitation = toSubmitInvitation;
 exports.toGetInvitation = toGetInvitation;

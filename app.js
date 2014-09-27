@@ -60,8 +60,8 @@ io.on('connection', function (socket) {
 	    // obj['data']=msg.data;
 	    //返回房间列表
       		console.log(msg.roomId);
-		socket.emit('syncCanvas',msg);
-     	 	//广播新建房间
+					//socket.emit('syncCanvas',msg);
+     	 		//广播新建房间
       		socket.broadcast.emit('syncCanvas',msg);
 	    break;
 	    //导出文件
@@ -178,6 +178,7 @@ app.post("/toRegister",accountRequestHandlers.toRegister);//注册
 app.post("/toLogout",accountRequestHandlers.toLogout);//登出
 app.get("/toCheckUserIsExist",accountRequestHandlers.toCheckUserIsExist);//检查用户名是否存在
 app.post("/toSubmitUserInfo",accountRequestHandlers.toSubmitUserInfo);//提交用户信息
+app.post("/toSubmitUserHead",accountRequestHandlers.toSubmitUserHead);//提交用户头像
 app.get("/toGetUserInfo",accountRequestHandlers.toGetUserInfo);//获取用户信息
 app.post("/toSubmitInvitation",accountRequestHandlers.toSubmitInvitation);//提交邀请
 app.get("/toGetInvitation",accountRequestHandlers.toGetInvitation);//获取邀请提示

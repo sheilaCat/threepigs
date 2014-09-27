@@ -600,6 +600,20 @@ function MongoDB(){
 
     // }
 
+
+    this.toSubmitUserInfo = function(peopleId, people, callback){
+        db.collection('people').update( {'peopleId' : peopleId} , people, function(err, docs) {
+            if (err) throw err;
+                console.log('update people===>' + SUCCESS);
+                db.collection('people').find({'peopleId' : peopleId}).toArray(function(err, docs){
+                    console.log(docs);
+                    callback(null, docs[0]); 
+                });
+
+                                       
+        });
+    }
+
 }
 module.exports = MongoDB;
 

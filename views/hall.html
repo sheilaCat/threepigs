@@ -76,6 +76,13 @@
 			$scope.toggleMenu( session.html);
 			session.html = null;
 		}
+
+		$scope.outPeople = function(){
+			session.clear();
+			window.location.reload();
+		}
+
+
 	}
 </script>
 <title>三只小猪</title></head>
@@ -84,7 +91,7 @@
 	<div id="nav">
 		<ul class="nav nav-list">
 			<div class = "profile">
-				<a href="#" ng-click="login()"><img class="profile" src="images/profile.png" /></a>
+				<a href="#" ng-click="login()"><img class="profile" src="head/{{$root.people.user.userAccount}}_head" /></a>
 				<label>{{ $root.people.peopleName || '请先登录'}}</label>
 			</div>
 			<li><a href="#" ng-click="toggleMenu('main')">大厅</a></li>
@@ -93,7 +100,7 @@
 			<!--<li><a href="/domtopng" ng-click="">File to png</a></li>-->
 		</ul>
 		<div id="logo">
-		<a href="#"><img src="images/LOGO.png" /></a>
+		<a href="#" ng-click="outPeople()"><img src="images/LOGO.png"/></a>
 		</div>
 	</div><!-- /nav-->
 	<div id="content">

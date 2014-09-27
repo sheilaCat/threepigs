@@ -59,14 +59,7 @@ var connection = function () {
 	   socket.on('syncCanvas',function(json){
 					// TODO Do something.
 					if(session.roomId == json.roomId){
-							var isClear = json.data.isClear;
-							var x = json.data.x;
-							var y = json.data.y;
-							var color = json.data.color;
-							var size = json.data.size;
-							var isEraser = json.data.isEraser;
-							var bgPath = json.data.bgPath;
-							paint.syncCanvas(x,y,color,size,isEraser,isClear,bgPath);
+							paint.syncCanvas(json);
 					}
 	    });
 	    //导出文件
