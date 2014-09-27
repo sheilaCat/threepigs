@@ -108,7 +108,6 @@
 										$rootScope.room = response[response.length - 1];
 										session.roomId = parseInt(response[response.length - 1].roomId);
 										paint.init(session.roomId);
-		  								paint.loadBg("files/canvas.png");
 										$scope.toggleMenu('room');
 										
 			  						}
@@ -133,9 +132,8 @@
 
 		  					$scope.toggleMenu('room');
 										// alert('加入了' + roomId + '号房间');
-
+							$rootScope.room = JSON.parse(session.room);
 							paint.init(session.roomId);
-		  					paint.loadBg("files/canvas.png");
 							var webrtc = new SimpleWebRTC({
 								// the id/element dom element that will hold "our" video
 								localVideoEl: 'localVideo',
@@ -157,9 +155,9 @@
 			  					.success(function(response) {
 			  						if(response != 'fail'){
 			  					// 		$scope.roomList = response;
+			  							session.room = JSON.stringify(response[0]);
 			  							session.roomId=roomId;
 		  								paint.init(session.roomId);
-		  								paint.loadBg("files/canvas.png");
 		  								
 		  								console.log(roomId);
 			  							$rootScope.room = response[0];

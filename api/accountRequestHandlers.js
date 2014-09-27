@@ -63,7 +63,16 @@ function toCheckUserIsExist(req,res){
 *提交用户信息
 */
 function toSubmitUserInfo(req,res){
-	
+	async.series([
+		function(cb){ mongoDB.toSubmitUserInfo(req.body.peopleId, req.body.people, cb)}
+	], function(err, results) {
+		console.log("update results : "+results[0]);
+		res.send(results[0]);
+		//if (results[0] == mongoDB.SUCCESS) {
+		//	res.
+		//}
+   		return ;
+	});
 }
 /**
 *获取用户信息

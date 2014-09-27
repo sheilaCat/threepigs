@@ -401,15 +401,18 @@ function MongoDB(){
             }
 
             var temp = docs[0].peopleList;
+            var update = [];
 
             for( i in temp ){
                 if(temp[i].peopleId == peopleId){
-                    temp.splice(i, 1);
                     console.log('people remove ===>' + SUCCESS);
+                }
+                else{
+                    update.push(temp[i]);
                 }
             }
 
-            db.collection('room').update( {'roomId' : roomId} ,{$set: {'peopleList': temp}},  {w:1}, function(err, doc) {
+            db.collection('room').update( {'roomId' : roomId} ,{$set: {'peopleList': update}},  {w:1}, function(err, doc) {
                 if (err) throw err;
                 console.log('peopleList update===>' + SUCCESS);  
 
