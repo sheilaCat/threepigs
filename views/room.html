@@ -41,7 +41,7 @@
 			});
 		}
 		$scope.getChosenFile= function(){
-				alert(filePath);
+				//alert(filePath);
 				paint.getRes(filePath);
 		}
 		
@@ -88,19 +88,14 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary" ng-click="getChosenFile()">选择</button>
+        <button type="button" class="btn btn-primary" ng-click="getChosenFile()" data-dismiss="modal">选择</button>
       </div>
     </div>
   </div>
 </div>
 
-		<button type="button" class="btn btn-xs" type="file">打开本地文件</button>
 		<button type="submit" name="exitRoom" class="btn btn-xs" ng-click="outRoom()">退出房间</button>
 <div class="openFile">
-		<form action="/toUploadFile" enctype="multipart/form-data" method="post">
-                            <input type="file" name="upload" id="exampleInputFile" multiple="multiple">
-                            <button type="submit" id="uploadFile" value="Upload File" name="upload" class="btn btn-xs"><label>查看文件</label></button>
-		</form>
 
      	<video height="150" id="localVideo"></video>
         <div height="150" id="remotesVideos"></div>

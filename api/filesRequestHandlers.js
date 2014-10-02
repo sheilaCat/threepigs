@@ -190,12 +190,21 @@ function domToPng (domFirePath) {
   });
  }
 
+function formatPage(len,num) {
+  var strLen = len.toString();
+  var strNum = num.toString();
+  for(var i = 0; i < strLen.length - strNum.length; i++) {
+    strNum = "0" + strNum;
+  }
+  return strNum;
+}
+
 function pdfToPng (filePath, fileName, toPath) {
   try {
     pdfutils(filePath, function(err, doc) {
       var i;
       for (i = 0; i < doc.length; i++) {
-        doc[i].asPNG({width: 740, maxHeight: 2400}).toFile(toPath + fileName + i + ".png");
+        doc[i].asPNG({width: 740, maxHeight: 2400}).toFile(toPath + fileName + formatPage(doc.length,i) + ".png");
         debugger;
       }
       console.log("toPath : " + toPath);

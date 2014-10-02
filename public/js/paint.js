@@ -183,7 +183,7 @@ var paint={
 			t.loadBg(t.resPath+"/"+t.files[t.index]);
 			//t.saveAsLocalImage();
 			t.loadPic(t.tempDocPath+"/"+t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png");
-			t.saveAsLocalImage();
+			//t.saveAsLocalImage();
 			t.sendData(false);
 		}
 	};
@@ -201,7 +201,7 @@ var paint={
 			t.loadBg(t.resPath+"/"+t.files[t.index]);
 			//t.saveAsLocalImage();
 			t.loadPic(t.tempDocPath+"/"+t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png");
-			t.saveAsLocalImage();
+			//t.saveAsLocalImage();
 			t.sendData(false);
 		}
 	};
@@ -237,7 +237,6 @@ var paint={
 		img.src=filePath;
 		img.onload=function(){
     			t.cxt.drawImage(img,0,0);
-    			t.cxt.globalCompositeOperation = "source-over";
     };
 	},
 	movePoint:function(x,y,dragging)
@@ -351,22 +350,27 @@ var paint={
 saveAsLocalImage:function() {  
     var t = this;
     t.cxt.globalCompositeOperation="destination-over";//设置在原图下层绘制
-    t.loadPic(t.resPath+"/"+t.files[t.index]);//加载背景图片
-    var img = t.canvas.toDataURL("image/png").replace("data:image/png;base64,", ""); //获取图片数据
-    var params ={
-   		imgData:img,
-    	imgName:t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png",
-    	imgPath:t.tempDocPath
-    };
-    //发送保存请求
-    $.ajax({ 
-    	url: "/saveImg",
-    	type:"post",
-    	data: params,
-    	dataType:"json",
-    	success: function(msg){
-    		if(msg.success==1){
-    			console.log('ok'); 
+    //t.loadPic(t.resPath+"/"+t.files[t.index]);//加载背景图片
+    var img = new Image();
+    img.src = t.resPath+"/"+t.files[t.index];
+    img.onload=function(){
+    	t.cxt.drawImage(img,0,0);
+    	t.cxt.globalCompositeOperation = "source-over";
+    	var imgData = t.canvas.toDataURL("image/png").replace("data:image/png;base64,", ""); //获取图片数据
+    	var params ={
+   			imgData:imgData,
+    		imgName:t.files[t.index].substring(0,t.files[t.index].lastIndexOf("."))+".png",
+    		imgPath:t.tempDocPath
+    	};
+    	//发送保存请求
+    	$.ajax({ 
+    		url: "/saveImg",
+    		type:"post",
+    		data: params,
+    		dataType:"json",
+    		success: function(msg){
+    			if(msg.success==1){
+    				console.log('ok'); 
     			//保存成功则同步数据
 //    				var obj = {
 //						'roomId':t.roomId,
@@ -382,10 +386,13 @@ saveAsLocalImage:function() {
     		}
     		else{
     			console.log('fail');
-    			alert("数据保存失败");  
+    			//alert("数据保存失败");  
     		} 			
       }  
       });
+    };
+    
+    
   },
   syncCanvas:function(json){
   	
@@ -463,7 +470,7 @@ saveAsLocalImage:function() {
   	var t = this;
   	var pathName = pName.substring(0,pName.lastIndexOf("."));
   	var params = {'roomId':t.roomId,
-  								'pathName':pathName};
+  			'pathName':pathName};
   	//console.log(params);
 		$.ajax({ 
     	url: "/getRoomRes",
@@ -476,10 +483,11 @@ saveAsLocalImage:function() {
     			t.resPath = msg.resPath;
     			t.tempDocPath = msg.tempDocPath;
     			t.files = msg.files;
+    			console.log(t.files);
     			t.index = 0;
     			$(t.prePic).attr("disabled","disabled");
     			if(t.files.length==0){
-    				alert("无文件");
+    				//alert("无文件");
     				t.resPath="files";
     				t.tempDocPath="temp";
     				t.files=["canvas.png"];
@@ -493,7 +501,7 @@ saveAsLocalImage:function() {
 					
     		}
     		else{
-    			alert("获取文件失败");
+    			//alert("获取文件失败");
     			t.resPath="files";
     			t.tempDocPath="temp";
     			t.files=["canvas.png"];

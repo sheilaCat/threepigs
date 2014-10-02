@@ -71,54 +71,59 @@
 
 
 		  			$scope.toCreateNewRoom = function(){
-
-		  				var peopleString = session.people;
-		  				if( peopleString == null){
-		  					$scope.toggleMenu('login');
+		  				if( session.roomId != null ){
+		  					alert('you are areadly create room');
 		  				}
 		  				else{
-		  					//console.log(peopleString);
-			  				var people = JSON.parse(peopleString);
-			  				//console.log(people);
+		  					var peopleString = session.people;
+			  				if( peopleString == null){
+			  					$scope.toggleMenu('login');
+			  				}
+			  				else{
+			  					//console.log(peopleString);
+				  				var people = JSON.parse(peopleString);
+				  				//console.log(people);
 
-			  				$http.post("/toCreateNewRoom",{"roomName" : $scope.roomName, "roomDescription" : $scope.roomDescription, "peopleId" : people.peopleId})
-			  					.success(function(response) {
-			  						if(response != "fail"){
-			  							$rootScope.roomLeftList = [];
-										$rootScope.roomRightList = [];
-			  							for(var i = 0;i < response.length; i++){
-				  						if(i % 2  == 0){
-				  							$rootScope.roomLeftList.push(response[i]);
-				  							// console.log('left--->' + i);
+				  				$http.post("/toCreateNewRoom",{"roomName" : $scope.roomName, "roomDescription" : $scope.roomDescription, "peopleId" : people.peopleId})
+				  					.success(function(response) {
+				  						if(response != "fail"){
+				  							$rootScope.roomLeftList = [];
+											$rootScope.roomRightList = [];
+				  							for(var i = 0;i < response.length; i++){
+					  						if(i % 2  == 0){
+					  							$rootScope.roomLeftList.push(response[i]);
+					  							// console.log('left--->' + i);
+					  						}
+					  						else{
+					  							$rootScope.roomRightList.push(response[i]);
+					  							// console.log('right--->' + i);
+					  						}
+			  							}
+
+											var obj = {
+												author:'System',
+												type:'creatRoom',
+												msg:'创建了一个房间'
+											};
+											
+											socket.emit("message",obj);
+											
+											$rootScope.room = response[response.length - 1];
+											session.roomId = parseInt(response[response.length - 1].roomId);
+											paint.init(session.roomId,true);
+											$scope.toggleMenu('room');
+											
 				  						}
 				  						else{
-				  							$rootScope.roomRightList.push(response[i]);
-				  							// console.log('right--->' + i);
+				  							alert("创建房间失败");
 				  						}
-		  							}
+				  					return ;
+				  				});
 
-										var obj = {
-											author:'System',
-											type:'creatRoom',
-											msg:'创建了一个房间'
-										};
-										
-										socket.emit("message",obj);
-										
-										$rootScope.room = response[response.length - 1];
-										session.roomId = parseInt(response[response.length - 1].roomId);
-										paint.init(session.roomId,true);
-										$scope.toggleMenu('room');
-										
-			  						}
-			  						else{
-			  							alert("创建房间失败");
-			  						}
-			  					return ;
-			  				});
-
+			  				}
+			  				return ;
 		  				}
-		  				return ;
+		  				
 		  			}
 
 		  			$scope.JoinRoom = function(roomId){
@@ -126,9 +131,9 @@
 		  					$scope.toggleMenu('login');
 		  				}
 		  				else if( session.roomId != roomId  && session.roomId != null){
-		  					alert('ni yijing jia ru fj l ' + session.roomId);
+		  					alert('you are areadly join room ' + session.roomId);
 		  				}
-		  				else if( session.roomId == roomId ){
+		  				else if( session.roomId == roomId  && session.room != null){
 
 		  					$scope.toggleMenu('room');
 										// alert('加入了' + roomId + '号房间');

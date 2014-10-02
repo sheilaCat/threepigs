@@ -36,7 +36,7 @@ function toLogin(req,res){
 function toRegister(req,res){
 	console.log("req.body :"+util.inspect(req.body,true));
 	fs.writeFileSync( __dirname + "/../public/head/" + req.body.user.userAccount + "_head", 
-		fs.readFileSync(__dirname + "/../public/head/_head"));
+		fs.readFileSync(__dirname + "/../public/head/profile"));
 	async.series([
 		function(cb){ mongoDB.insertPeople(req.body,cb)}
 	], function(err, results) {

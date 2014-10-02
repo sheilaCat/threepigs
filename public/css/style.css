@@ -19,7 +19,7 @@ border-left-style: solid;
 -ms-transition-duration:1s;
 -o-transition-duration:1s;}
 .profile{padding-top: 40px;padding-bottom: 50px;}
-.profile a>img{padding-bottom:10px;display: block;margin-left:50px;max-width: 80px;}
+.profile a>img{padding-bottom:10px;display: block;margin-left:50px;max-width: 80px;border-radius:20px;}
 .profile label{color:gray;font-weight: normal;font-size: 10px;}
 .rooms{position: absolute;margin-left: 300px;padding-top: 30px}
 .btn>.room>h5,h6{color: #969696;font-size: 12px;margin-right: 20px;margin-left: 20px;line-height: 0px;}
@@ -35,7 +35,7 @@ border-left-style: solid;
 .canvas{display:block;background-color: gray;padding-top: 200px;margin-left: 300px;width: 700px;height:500px;border-radius: 10px;}
 #files{padding-top:50px;margin-left: 330px;}
 .file{width: 1000px;}
-#files > div > div> div > h1{padding-left: 0;margin-top: 0;padding-top: 0;margin-top:10px;font-family:'宋体';margin-left:60px;font-size: 15px;color:#fff;font-weight: normal;text-align: left;}
+#files > div > div> div > h1{padding-left: 0;margin-top: 0;padding-top: 0;margin-top:10px;font-family:'宋体';margin-left:10px;font-size: 15px;color:#fff;font-weight: normal;text-align: left;}
 #files > div > div> div > p{font-size: 13px;color:#00aeef;margin-left: 50px;}
 #searchForm{position:absolute;padding-left: 1020px;padding-top: 0;margin-top: 0;}
 #searchForm>.btn{background-color: #00aeef;border-color: #1e2025;display: inline;}
@@ -83,7 +83,8 @@ h1>label{font-size: 20px}
 .popover-content{font-size: 20px;}
 #logo{position: absolute;z-index: 1000;margin-left: 60px;margin-top: 200px;}
 #logo > a > img:hover{padding-left: 10px;padding-top: 10px;}
-#prePic,#nextPic{width: 30px;height: 30px;}
+#prePic,#nextPic{width: 30px;height: 30px;position: fixed;}
 #prePic{position: absolute;padding-top:0;border-radius: 5px;margin-top: 200px;border-radius: 10px;}
 #nextPic{position: absolute;margin-left:750px;margin-top: 200px;border-radius: 10px;}
 #canvas{margin-left: 20px;margin-top: 20px;}
+#content > div:nth-child(6) > div > form > div > div.profile{padding-top: 0px;padding-bottom: 0;}
