@@ -1,0 +1,76 @@
+
+	<div ng-controller="squareController">
+	<script>
+		function squareController($scope, $http, $rootScope){
+			$http.get("/toGetAllFile")
+  				.success(function(response) {
+
+  					$scope.fileList = [];
+  					var temp = [];
+  					for(var i in response){
+  						temp.push(response[i]);
+  						console.log("temp add " + i);
+  						if( (i+1) % 3 == 0){
+  							console.log("fileList add " + i);
+  							$scope.fileList.push(temp);
+  							temp = [];
+  							console.log(temp);
+  							console.log();
+  						}
+  					}
+  					$scope.fileList.push(temp);
+  					console.log(temp);
+  					console.log($scope.fileList);
+  					
+  				});
+
+  			$scope.lookFile = function(file) {
+                            switch(file.fileType) {
+                                  case "resourseType":
+                                          file.fileTypeName = "课程资源";
+                                          break;
+                                  case "documentType":
+                                          file.fileTypeName = "文档类";
+                                          break;
+                                  case "codeType":
+                                          file.fileTypeName = "代码类";
+                                          break;
+                                  case "toolType":
+                                          file.fileTypeName = "工具类";
+                                          break;
+                                  default:
+                                          file.fileTypeName = "未知类别";
+                                          break;
+                            }
+                            $rootScope.file = file;
+                            $scope.toggleMenu('lookFIle');
+  			}
+
+                      $scope.upload = function(){
+                              if(session.people == null){
+                                $scope.toggleMenu('login');
+                              }
+                              else{
+                                  $scope.toggleMenu('uploadFile');
+                              }
+                      }
+
+		}
+
+	</script>
+
+		<h1>广场<button type="button" class="btn btn-xs" >
+		<a href="#" ng-click="upload()">上传文件</a></button></h1>
+
+		<div id="files" class="container-fluid">
+			<div class="row" ng-repeat=" rowList in fileList ">
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" ng-repeat=" file in rowList ">
+					<div class="file">
+					<button type="button" class="btn btn-xs" ng-click="lookFile(file)"><img src="/images/{{file.fileSuffix}}.png" /></button>
+					<h1>{{ file.fileName }}</h1><p>@{{ file.peopleName}}</p>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
+		<!--/end files -->

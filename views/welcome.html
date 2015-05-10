@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>三只小猪 - 在线协作学习平台</title>
+	<link rel="stylesheet" href="css/base.css" type="text/css" />
+	<style type="text/css">
+		body{font-family:"font";}
+		.article{width:100%;margin:150px auto;}
+		.content{position:relative;z-index:2;width:100%;height:450px;overflow:hidden;padding-top:100px;}
+		.content h1{margin:0 400px;font-size:80px;color:#fff;width: 350px;}
+		.content h5{margin:0 400px;position: absolute;top: 150px;left:340px;font-size: 24px;color:#fff;width: 100%;}
+		.content-1{background-color: #00bdc3;height: 200px;}
+		.content-2{padding-top: 240px;}
+		.content-5 h1 {position: absolute;top:30px;left:100px;}
+		.content-5 h1 a{color:#fff;}
+		.content-5 h1 a:hover{color:#f7c614;font-style: normal;text-decoration: none;}
+		.animg{position:absolute;left:-1000px;top:200px;
+			-webkit-transition-duration:1s;
+			-moz-transition-duration:1s;
+			-ms-transition-duration:1s;
+			-o-transition-duration:1s;
+		}
+		.animg5{position: absolute;top:2000px;left:150px;
+			-webkit-transition-duration:1s;
+			-moz-transition-duration:1s;
+			-ms-transition-duration:1s;
+			-o-transition-duration:1s;
+
+		}
+		.detailtitle{position:absolute;left:400px;color:#000;font-size:24px;
+			-webkit-transition-duration:3s;color:#fff;
+			-moz-transition-duration:3s;
+			-ms-transition-duration:3s;
+			-o-transition-duration:3s;
+		}
+		.detail{width:100%;font-size:17px;
+			-webkit-transition-duration:2s;color:#fff;margin:30px 400px;
+			-moz-transition-duration:2s;
+			-ms-transition-duration:2s;
+			-o-transition-duration:2s;
+		}
+		.detailtitle-1{top:550px;left:-1000px;}
+
+		.bannerBg{background-color: #bdf5f6;position: absolute;top:0;left: 0;width: 100%;height: 100px;}
+		.banner1{position: absolute;top: 100px;}
+		.banner2{position: absolute;top: 450px;}
+
+		/* 运动轨迹 begin */
+		.content-focus .animg{left:700px;top:100px;}
+		.content-focus .animg5{left:200px;top: 150px;}
+		.content-focus .detail{left:0;top:230px;}
+		.content-focus .detailtitle{top:200px;}
+		.content-focus .detailtitle-1{left:0;}
+		/* 运动轨迹 end */
+
+
+		.section{position:fixed;left:50%;width:960px;margin-left:-480px;}
+		.section span{position:absolute;z-index:1000;display:block;width:196px;height:109px;opacity:.7;background-image: url(images/flower2.png);}
+
+		.section-1 .span-1{left:400px;top:100px;background-image: url(images/flower3.png);width: 133px;height:61px;}
+		.section-1 .span-2{left:700px;top:200px;}
+		.section-1 .span-3{left:750px;top:400px;background-image: url(images/flower1.png);width: 83px;height:48px;}
+		.section-1 .span-4{left:1100px;top:250px;}
+
+		.section-2 .span-1{left:-50px;top:700px;background-image: url(images/flower3.png);width: 133px;height:61px;}
+		.section-2 .span-2{left:-100px;top:1000px;background-image: url(images/flower1.png);width: 83px;height:48px;}
+		.section-2 .span-3{left:200px;top:850px;background-image: url(images/flower4.png);width: auto;height:auto;}
+		.section-2 .span-4{left:800px;top:800px;background-image: url(images/flower1.png);width: 83px;height:48px;}
+
+		.section-3 .span-1{left:-150px;top:1100px;background-image: url(images/flower4.png);width: 172px;height:106px;}
+		.section-3 .span-2{left:800px;top:1500px;}
+		.section-3 .span-3{left:1200px;top:1850px;background-image: url(images/flower4.png);width: 172px;height:106px;}
+		.section-3 .span-4{left:800px;top:2500px;}
+
+
+		.slidecount{position:fixed;right:10px;bottom:50%;z-index:1;}
+		.slidecount li{margin-bottom:10px;}
+		.slidecount li a{display:block;width:10px;height:10px;background:gray;border:3px solid white;overflow:hidden;line-height:100px;border-radius:10px;}
+		.slidecount li a:hover{text-decoration:none;background:white;border:3px solid orange;}
+		.slidecount li.focus a{background:orange;border:3px solid orange;}
+	</style>
+</head>
+<body>
+<!-- banner -->
+<div class="bannerBg" ><div class="banner1">
+<img src="images/banner1.png" alt=""/></div>
+<!-- /end -->
+</div>
+	<div class="article">			
+		<div class="content content-1" id="first">
+			<h1>三只小猪</h1><h5>在线协作学习平台</h5>
+			<p class="detailtitle">Online Collaborative learning platform</p>
+			<p class="detail">There will be the one who can figure this problem out.
+			</p>
+		</div>
+		<div class="banner2"><img src = "images/banner2.png" /></div>
+		<div class="content content-2" id="second">
+			<h1>在线协作视频对话</h1>
+			<img class="animg" src="images/img1.png" alt="" />
+		</div>
+		<div class="content content-3" id="third">
+			<h1>疑点难点画笔勾划</h1>
+			<img class="animg" src="images/img2.png" alt="" />
+		</div>
+		<div class="content content-4" id="forth">
+			<h1>资料共享自主学习</h1>
+			<img class="animg" src="images/img3.png" alt="" />
+		</div>
+		<div class="content content-5" id="fifth">
+			<h1><a href="hall.html">enter</a></h1>
+			<img class="animg5" src="images/enter.png" alt="" />
+		</div>
+
+	</div>
+
+	<div class="section section-1">
+		<span class="span-1"></span>
+		<span class="span-2"></span>
+		<span class="span-3"></span>
+		<span class="span-4"></span>
+	</div>
+
+	<div class="section section-2">
+		<span class="span-1"></span>
+		<span class="span-2"></span>
+		<span class="span-3"></span>
+		<span class="span-4"></span>
+	</div>
+
+	<div class="section section-3">
+		<span class="span-1"></span>
+		<span class="span-2"></span>
+		<span class="span-3"></span>
+		<span class="span-4"></span>
+	</div>
+
+	<div class="slidecount">
+		<ul>
+			<li class="focus"><a href="#first">1</a></li>
+			<li><a href="#second">2</a></li>
+			<li><a href="#third">3</a></li>
+			<li><a href="#forth">4</a></li>
+			<li><a href="#fifth">5</a></li>
+		</ul>
+	</div>
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var oWinTop;
+			var oContentH = $(".content").height();//450px
+			var oContentLen = $(".content").length;
+			var oContentH_1 = $(".content-1").height();//200px
+			var vIndex = 0;
+			$(".article").css("height",oContentH*oContentLen);
+			$(".content:eq("+vIndex+")").addClass("content-focus");
+
+			$(window).scroll(function(){
+				parallax();
+				oWinTop = $(window).scrollTop();
+				$(".slidecount li").removeClass("focus");
+				$(".content").removeClass("content-focus");
+				if(oWinTop >= 0 && oWinTop < oContentH_1*2){
+					vIndex = 0;
+					$(".slidecount li:eq("+vIndex+")").addClass("focus");
+					$(".content:eq("+vIndex+")").addClass("content-focus");
+				}else if(oWinTop >= oContentH_1*2 && oWinTop< (oContentH*2 + oContentH_1*2)){
+					vIndex = 1;
+					$(".slidecount li:eq("+vIndex+")").addClass("focus");
+					$(".content:eq("+vIndex+")").addClass("content-focus");
+				}else if(oWinTop >= (oContentH*2 + oContentH_1*2) && oWinTop < (oContentH*3 + oContentH_1*3)){
+					vIndex = 2;
+					$(".slidecount li:eq("+vIndex+")").addClass("focus");
+					$(".content:eq("+vIndex+")").addClass("content-focus");
+				}else if(oWinTop >= (oContentH*3 + oContentH_1*2) && oWinTop < (oContentH*6 + oContentH_1*3)){
+					vIndex = 3;
+					$(".slidecount li:eq("+vIndex+")").addClass("focus");
+					$(".content:eq("+vIndex+")").addClass("content-focus");
+				}else{
+					vIndex = 4;
+					$(".slidecount li:eq("+vIndex+")").addClass("focus");
+					$(".content:eq("+vIndex+")").addClass("content-focus");
+				}
+			});
+
+			$(".slidecount li").click(function(){
+				if($(this).index() == 0){
+					$("body").animate({
+						scrollTop:$("#first").offset().top
+					},5000);
+					return false;
+				}else if($(this).index() == 1){
+					$("body").animate({
+						scrollTop:$("#second").offset().top
+					},5000);
+					return false;
+				}else if($(this).index() == 2){
+					$("body").animate({
+						scrollTop:$("#third").offset().top
+					},5000);
+					return false;
+				}
+				else if($(this).index() == 3){
+					$("body").animate({
+						scrollTop:$("#forth").offset().top
+					},5000);
+					return false;
+				}
+				else if($(this).index() == 4){
+					$("body").animate({
+						scrollTop:$("#fifth").offset().top
+					},5000);
+					return false;
+				}
+			});
+
+			function parallax(){
+				var toped = $(window).scrollTop();
+				$('.section-1').css({top:(0-(toped*1.75))+'px'});
+				$('.section-2').css({top:(0-(toped*0.35))+'px'});
+				$('.section-3').css({top:(0-(toped*1.35))+'px'});
+			}
+			parallax();
+
+		});
+	</script>
+</body>
+</html>

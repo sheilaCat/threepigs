@@ -1,0 +1,54 @@
+
+		<h1>登录</h1><!--<button type="button" class="btn btn-xs">打开文件</button>
+		<button type="button" class="btn btn-xs">保存文件</button>
+		<button type="button" class="btn btn-xs">画笔</button></h1>
+
+		<div class="canvas">
+		</div>
+		<!--/end rooms -->
+		<form role="form" ng-controller="loginController">
+			<div class="login">
+			<label for="username">用户名：</label>
+			<input type="text" class="form-control" id="username" ng-model="userAccount" placeholder="Enter username"/>
+			<label for="psd">密码：</label>
+			<input type="password" class="form-control" id="psd" ng-model="userPassword" placeholder="Enter Password"/>
+			<button type="button" class=" btn" ng-click="login()">登录</button>
+			
+			<p>没有账号？这里<a href="#" ng-click="toggleMenu('register')">注册</a></p>
+			</div>
+		<script type="text/javascript">
+		function loginController($scope, $http, $rootScope){
+			$scope.login = function(){
+
+				$http.post("/toLogin", {"userAccount" : $scope.userAccount, "userPassword" : $scope.userPassword})
+	  				.success(function(response) {
+	  					if(response != "fail"){
+	  						$scope.toggleMenu('main');
+	  						var obj = {
+								'type' : 'login',
+								'peopleId' : response[0].peopleId
+							};
+							connection();
+							socket.emit('message', obj);
+	  						session.people = JSON.stringify(response[0]);
+	  						console.log(session);
+	  						$rootScope.people = JSON.parse(session.people);
+							
+							
+							// alert("login success");
+							/*var obj = {
+								author: response[0].peopleName,
+								type:'login',
+								msg: response[0].peopleName + ' 登录了'
+							};
+							console.log(obj);
+							socket.emit("message",obj);*/
+	  					}
+	  					else
+	  						alert("login fail");
+	  					});
+			};
+		}
+			
+		</script>
+		</form>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html ng-app="">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/canvas.css">
+<script type="text/javascript">var session = window.sessionStorage;</script>
+<script src="js/paint.js"></script>
+<script src = "js/jquery-2.1.1.js"></script>
+<script src = "js/angular.min.js"></script>
+<script src="js/webRTC.js"></script> 
+<script src="/socket.io/socket.io.js"></script>
+<script src = "js/connection.js"></script>
+<script type="text/javascript">
+	
+	function shutAllPages($scope){
+		$scope.mainShow=false;
+		$scope.squareShow=false;
+		$scope.roomShow=false;
+		$scope.loginShow=false;
+		$scope.registerShow=false;
+		$scope.settingShow=false;
+		$scope.uploadFileShow=false;
+		$scope.lookFileShow=false;
+	}
+	function MenuController($scope, $rootScope){
+		$scope.mainShow=true;
+
+		if(session.people != null){
+			$rootScope.people = JSON.parse(session.people);
+			connection();
+		}
+
+
+
+ 		$scope.toggleMenu = function($where){
+			if($where == 'main'){
+				shutAllPages($scope);
+				$scope.mainShow=true;
+			}else if($where == 'square'){
+				shutAllPages($scope);
+				$scope.squareShow=true;
+			}else if($where =='room'){
+				shutAllPages($scope);
+				$scope.roomShow=true;
+			}else if($where == 'login'){
+				shutAllPages($scope);
+				$scope.loginShow=true;
+			}else if($where == 'register'){
+				shutAllPages($scope);
+				$scope.registerShow=true;
+			}else if($where == 'setting'){
+				shutAllPages($scope);
+				$scope.settingShow=true;
+			}else if($where == 'uploadFile'){
+				shutAllPages($scope);
+				$scope.uploadFileShow=true;
+			}else if($where == 'lookFIle'){
+				shutAllPages($scope);
+				$scope.lookFileShow=true;
+			}
+
+		}
+
+		$scope.login = function(){
+			if(session.people ==  null){
+				$scope.toggleMenu('login')
+			}
+			else{
+				$scope.toggleMenu('setting');
+			}
+		}
+
+		if( session.html != null ){
+			$scope.toggleMenu( session.html);
+			session.html = null;
+		}
+
+		$scope.outPeople = function(){
+			session.clear();
+			window.location.reload();
+		}
+
+
+	}
+</script>
+<title>三只小猪</title></head>
+<body>
+<div id="page" ng-controller="MenuController">
+	<div id="nav">
+		<ul class="nav nav-list">
+			<div class = "profile">
+				<a href="#" ng-click="login()"><img class="profile" src="head/{{$root.people.user.userAccount}}_head" /></a>
+				<label>{{ $root.people.peopleName || '请先登录'}}</label>
+			</div>
+			<li><a href="#" ng-click="toggleMenu('main')">大厅</a></li>
+			<li><a href="#" ng-click="toggleMenu('square')">广场</a></li>
+			<!-- <li><a href="#" ng-click="toggleMenu('setting')">设置</a></li> -->
+			<!--<li><a href="/domtopng" ng-click="">File to png</a></li>-->
+		</ul>
+		<div id="logo">
+		<a href="#" ng-click="outPeople()"><img src="images/LOGO.png"/></a>
+		</div>
+	</div><!-- /nav-->
+	<div id="content">
+		<div ng-include="'main.html'" ng-show='mainShow'></div>
+		<div ng-include="'square.html'" ng-show="squareShow"></div>
+		<div ng-include="'room.html'" ng-show="roomShow"></div>
+		<div ng-include="'login.html'" ng-show="loginShow"></div>
+		<div ng-include="'register.html'" ng-show="registerShow"></div>
+		<div ng-include="'setting.html'" ng-show="settingShow"></div>
+		<div ng-include="'uploadFile.html'" ng-show="uploadFileShow"></div>
+		<div ng-include="'lookFile.html'" ng-show="lookFileShow"></div>
+	</div>
+	<script src = "js/bootstrap.min.js"></script>
+</div><!-- /page -->
+</body>
+</html>

@@ -1,0 +1,108 @@
+
+<div  ng-controller="roomFileController">	
+<h1>房间 
+<label>{{$root.room.roomName}}</label>
+<script type="text/javascript">
+	var filePath;
+	function roomFileController($scope, $http, $rootScope){
+
+		$scope.getAllFile = function(){
+			$http.get("/toGetAllFile").success(function(response) {$scope.fileList = response;});
+		}
+
+		$scope.getFileByType = function(fileType){
+			$http.get("/toGetFileByType?fileType=" + fileType).success(function(response) {$scope.fileList = response;});
+		}
+
+		$scope.$watch('key', function(){
+			$http.get("/toSearchFile?key=" + $scope.key).success(function(response) {$scope.fileList = response;});
+		});
+
+		$scope.outRoom = function(){
+			$http.get("/toQuitRoom?peopleId=" + $rootScope.people.peopleId + "&roomId=" + $rootScope.room.roomId).success(function(response) {
+				$rootScope.roomLeftList = [];
+				$rootScope.roomRightList = [];
+				for(var i = 0;i < response.length; i++){
+		  			if(i % 2  == 0){
+		  				$rootScope.roomLeftList.push(response[i]);
+		  							// console.log('left--->' + i);
+		  			}
+		  			else{
+		  				$rootScope.roomRightList.push(response[i]);
+		  							// console.log('right--->' + i);
+		  			}
+		  		}
+		  	paint.init(-1,true);
+				$rootScope.room = null;
+				session.removeItem('roomId');
+				session.removeItem('room');
+				console.log(session);
+				$scope.toggleMenu('main');
+			});
+		}
+		$scope.getChosenFile= function(){
+				//alert(filePath);
+				paint.getRes(filePath);
+		}
+		
+	}
+	function storeChosen(path){
+		filePath = path;
+	}
+
+</script>
+
+<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getAllFile()">
+ 打开在线文件
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">在线文件选择</h4>
+       	<input type="text" class="form-control" id="search" placeholder="输入关键字查找/凭ID号查找" ng-model="key"/>
+      </div>
+      <div class="modal-body">
+      	 <div class="classify">
+      	 	<ul>
+      	 	<li><a href="" ng-click="getAllFile()">全部</a></li>
+      	 	<li><a href="" ng-click="getFileByType('resourseType')">课程资源</a></li>
+      	 	<li><a href="" ng-click="getFileByType('documentType')">文档类</a></li>
+              <li><a href="" ng-click="getFileByType('codeType')">代码类</a></li>
+              <li><a href="" ng-click="getFileByType('toolType')">工具类</a></li>
+      	 	</ul> 
+      	 </div>
+      	 <div class="searchRes">
+      	 	<ul>
+      	 	<li ng-repeat="file in fileList">
+      	 		<label>
+      	 		<input type="radio" name="chosen" value="{{file.fileLocation}}" onchange="storeChosen(this.value)">{{file.fileName}}</input>
+      	 		</label>
+      	 	</li>
+      	 	</ul>
+
+      	 </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" ng-click="getChosenFile()" data-dismiss="modal">选择</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+		<button type="submit" name="exitRoom" class="btn btn-xs" ng-click="outRoom()">退出房间</button>
+<div class="openFile">
+
+     	<video height="150" id="localVideo"></video>
+        <div height="150" id="remotesVideos"></div>
+		</div>
+		</h1>
+
+		<div ng-include="'canvas.html'"></div>
+
+		<!--/end rooms -->
+</div>

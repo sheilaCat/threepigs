@@ -1,0 +1,234 @@
+<div  ng-controller="roomController">
+		<h1>大厅
+
+<!-- Button trigger modal -->
+<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForRoom">
+	新建房间
+</button>
+	
+	<a href="#" id="invite" class="btn btn-xs" rel="popover" data-content="点击进入XX号房间" data-original-title="房间邀请">收到邀请</a>
+	
+
+<!-- Modal -->
+<div class="modal fade" id="myModalForRoom" tabindex="-1" role="dialog" aria-labelledby="myModalLabelForRoom" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabelForRoom">新建房间</h4>
+      </div>
+      <div class="modal-body">
+      	<input type="text" class="form-control" id="roomName" placeholder="输入房间名" ng-model="roomName"/>
+      	
+      	<input type="text" class="form-control" id="roomDescription" placeholder="请输入房间描述" ng-model="roomDescription"/>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="toCreateNewRoom()" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</h1>
+			<div class="rooms">
+			<script type="text/javascript">
+				$(function ()
+					{ $("#invite").popover({trigger: 'hover'});
+					});
+
+				function delay(){
+					setTimeout('what()',10000);
+				}
+				function what(){
+					$('#remotesVideos video').css('width','280px');
+					$('#remotesVideos video').css('height','150px');
+				}
+
+				function roomController($scope, $http, $rootScope){
+					$rootScope.roomLeftList = [];
+					$rootScope.roomRightList = [];
+					$http.get("/toGetAllRoom")
+		  				.success(function(response) {
+		  					$rootScope.roomList = response;
+		  					console.log($rootScope.roomList);
+		  					//console.log(response.length);
+		  					for(var i = 0;i < response.length; i++){
+		  						if(i % 2  == 0){
+		  							$rootScope.roomLeftList.push(response[i]);
+		  							// console.log('left--->' + i);
+		  						}
+		  						else{
+		  							$rootScope.roomRightList.push(response[i]);
+		  							// console.log('right--->' + i);
+		  						}
+		  					}
+
+		  					// console.log('left---->');
+		  					// console.log($rootScope.rooomLeftList);
+		  				});
+
+
+		  			$scope.toCreateNewRoom = function(){
+		  				if( session.roomId != null ){
+		  					alert('you are areadly create room');
+		  				}
+		  				else{
+		  					var peopleString = session.people;
+			  				if( peopleString == null){
+			  					$scope.toggleMenu('login');
+			  				}
+			  				else{
+			  					//console.log(peopleString);
+				  				var people = JSON.parse(peopleString);
+				  				//console.log(people);
+
+				  				$http.post("/toCreateNewRoom",{"roomName" : $scope.roomName, "roomDescription" : $scope.roomDescription, "peopleId" : people.peopleId})
+				  					.success(function(response) {
+				  						if(response != "fail"){
+				  							$rootScope.roomLeftList = [];
+											$rootScope.roomRightList = [];
+				  							for(var i = 0;i < response.length; i++){
+					  						if(i % 2  == 0){
+					  							$rootScope.roomLeftList.push(response[i]);
+					  							// console.log('left--->' + i);
+					  						}
+					  						else{
+					  							$rootScope.roomRightList.push(response[i]);
+					  							// console.log('right--->' + i);
+					  						}
+			  							}
+
+											var obj = {
+												author:'System',
+												type:'creatRoom',
+												msg:'创建了一个房间'
+											};
+											
+											socket.emit("message",obj);
+											
+											$rootScope.room = response[response.length - 1];
+											session.roomId = parseInt(response[response.length - 1].roomId);
+											paint.init(session.roomId,true);
+											$scope.toggleMenu('room');
+											
+				  						}
+				  						else{
+				  							alert("创建房间失败");
+				  						}
+				  					return ;
+				  				});
+
+			  				}
+			  				return ;
+		  				}
+		  				
+		  			}
+
+		  			$scope.JoinRoom = function(roomId){
+		  				if(session.people == null){
+		  					$scope.toggleMenu('login');
+		  				}
+		  				else if( session.roomId != roomId  && session.roomId != null){
+		  					alert('you are areadly join room ' + session.roomId);
+		  				}
+		  				else if( session.roomId == roomId  && session.room != null){
+
+		  					$scope.toggleMenu('room');
+										// alert('加入了' + roomId + '号房间');
+							$rootScope.room = JSON.parse(session.room);
+							paint.init(session.roomId,false);
+							var webrtc = new SimpleWebRTC({
+								// the id/element dom element that will hold "our" video
+								localVideoEl: 'localVideo',
+								// the id/element dom element that will hold remote videos
+								remoteVideosEl: 'remotesVideos',
+								// immediately ask for camera access
+								autoRequestMedia: true
+							});
+							// we have to wait until it's ready
+							webrtc.on('readyToCall', function () {
+							// you can name it anything
+								webrtc.joinRoom(roomId + '');
+							});
+							delay();
+		  				}
+		  				else{
+		  					var people = JSON.parse(session.people);
+		  					$http.post("/toJoinRoom",{"peopleId" : people.peopleId, "roomId" : roomId })
+			  					.success(function(response) {
+			  						if(response != 'fail'){
+			  					// 		$scope.roomList = response;
+			  							session.room = JSON.stringify(response[0]);
+			  							session.roomId=roomId;
+		  								paint.init(session.roomId,false);
+		  								console.log(roomId);
+			  							$rootScope.room = response[0];
+
+										// var obj = {
+										// 	author:'System',
+										// 	type:'creatRoom',
+										// 	msg:'创建了一个房间'
+										// };
+										// alert("创建了一个房间");
+										// socket.emit("message",obj);
+										$scope.toggleMenu('room');
+										// alert('加入了' + roomId + '号房间');
+
+
+										var webrtc = new SimpleWebRTC({
+									          // the id/element dom element that will hold "our" video
+									          localVideoEl: 'localVideo',
+									          // the id/element dom element that will hold remote videos
+									          remoteVideosEl: 'remotesVideos',
+									          // immediately ask for camera access
+									          autoRequestMedia: true
+									        });
+									 // we have to wait until it's ready
+									    webrtc.on('readyToCall', function () {
+									      // you can name it anything
+									      webrtc.joinRoom(roomId + '');
+									    });
+										delay();
+			  						}
+			  						else{
+			  							alert("加入房间失败");
+			  						}
+			  					return ;
+			  				});
+		  				}
+		  				return ;
+
+		  			}
+				}
+
+
+			</script>
+			<div class="btn-group-vertical leftRoom">
+
+				<button type="button" class="btn"  ng-repeat="room in $root.roomLeftList" ng-click="JoinRoom( room.roomId )"> 
+					<div class="room">
+					<h5>{{ room.roomName }}</h5><h6>{{ room.roomId }}</h6>
+					<p>{{ room.roomDescription }}</p>
+					</div>
+				</button>
+
+			</div>
+
+			<div class="btn-group-vertical rightRoom">
+
+				<button type="button" class="btn"  ng-repeat="room in $root.roomRightList" ng-click="JoinRoom( room.roomId )"> 
+					<div class="room">
+					<h5>{{ room.roomName }}</h5><h6>{{ room.roomId }}</h6>
+					<p>{{ room.roomDescription }}</p>
+					</div>
+				</button>
+
+			</div>
+
+
+			</div>
+		</div>
+		</div>
+		<!--/end rooms -->

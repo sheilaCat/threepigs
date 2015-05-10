@@ -1,0 +1,90 @@
+<div ng-controller='settingController'>
+<script type="text/javascript">
+	function settingController($scope, $http, $rootScope){
+
+		$scope.toSetting = function(){
+			console.log($scope.newPass);
+			console.log($scope.rePass);
+			if($scope.newPass != $scope.rePass){
+				alert("请确认新密码");
+			}
+
+			else if($scope.oldPass != $rootScope.people.user.userPassword && $scope.newPass != null){
+				console.log($scope.newPass);
+				alert("旧密码输入错误");
+			}
+			else{
+				var people = {
+					'user' : {
+						'userPassword' : $scope.newPass
+					},
+					'peopleName' : $scope.name,
+					'peopleAge' : $scope.age,
+					'peopleSex' : $scope.sex,
+					'peopleEmail' : $scope.email,
+					'peopleQq' : $scope.qq
+
+				};
+				if( $scope.newPass != null ){
+					$rootScope.people.user.userPassword = $scope.newPass;
+				}
+				if( $scope.name != null ){
+					$rootScope.people.peopleName = $scope.name;
+				}
+				if( $scope.age != null ){
+					$rootScope.people.peopleAge = $scope.age;
+				}
+				if( $scope.sex != null ){
+					$rootScope.people.peopleSex = $scope.sex;
+				}
+				if( $scope.email != null ){
+					$rootScope.people.peopleEmail = $scope.email;
+				}
+				if( $scope.qq != null ){
+					$rootScope.people.peopleQq = $scope.qq;
+				}
+				$rootScope.people._id = undefined;
+				console.log($rootScope.people);
+				var peopleId = $rootScope.people.peopleId;
+				$http.post("/toSubmitUserInfo",{"peopleId" : peopleId, "people" : $rootScope.people})
+			  					.success(function(response){
+			  						alert('修改成功');
+			  						console.log(response);
+			  						session.people = JSON.stringify(response);
+			  						$scope.toggleMenu('main');
+			  					});
+			}
+			return ;
+		}
+	}
+</script>
+		<h1>设置</h1>
+		<form role="form" action='/toSubmitUserHead' method='post' enctype="multipart/form-data">
+		<div class="login">
+			<label>头像上传：</label>
+			<input type="file" name="head"/>
+			<div class="profile"><img class="profile" src="head/{{$root.people.user.userAccount}}_head"></div>
+			<label for="username">用户名：</label>
+			<input type="text" class="form-control" name="username" id="username" placeholder="Enter username" disabled value={{$root.people.user.userAccount}} />
+			<input type="hidden" name="username" value={{$root.people.user.userAccount}} />
+			<label for="psd">旧密码：</label>
+			<input type="password" class="form-control" id="psd" placeholder="Enter Password" ng-model="oldPass" />
+			<label for="new-psd">新密码</label>
+			<input type="password" class="form-control" id="new-psd" placeholder="Enter Password" ng-model="newPass" />
+			<label for="re-psd">确认新密码：</label>
+			<input type="password" class="form-control" id="re-psd" placeholder="Confirm Password" ng-model="rePass" />
+			<label for="name">姓名：</label>
+			<input type="text" class="form-control" id="name" placeholder="{{$root.people.peopleName || 'Enter name'}}" ng-model="name" />
+			<label for="age">年龄：</label>
+			<input type="text" class="form-control" id="age" placeholder="{{$root.people.peopleAge || 'Enter age'}}" ng-model="age" />
+			<label for="sex">性别：</label>
+			<div class="input-group" id="sexChoose">
+			<input type="radio" name="sex" value="男" ng-model='sex'>男</input><input type="radio" name="sex" value="女" ng-model='sex'>女</input></div>
+			<label for="email">邮箱：</label>
+			<input type="text" class="form-control" id="age" placeholder="{{$root.people.peopleEmail || 'xxx@xxx.xxx'}}" ng-model="email" />
+			<label for="qq">qq：</label>
+			<input type="text" class="form-control" id="qq" placeholder="{{$root.people.peopleQq || 'xxxxxx'}}" ng-model="qq" />
+			<button type="submit" class=" btn" ng-click="toSetting()">确认修改</button>
+		</div>
+		</form>
+</div>

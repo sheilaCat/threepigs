@@ -1,0 +1,124 @@
+﻿{
+	"peopleId" : 1,
+	"peopleName" : "Chenyi",
+	"peopleAge" : 20,
+	"peopleSex" : "男",
+	"peopleEmail" : "aa495176533@qq.com",
+	"peopleTel" : "15200801442",
+	"peopleQq" : "495176533",
+	"peopleBirthday" : "08-04",
+
+	"user" :{
+				"userAccout" : "root",
+				"userPassword" : "root"
+			},
+
+	"uploadFileList" : [
+					{
+						"fileId" : 1,
+						"fileName" : "高数大一下复习资料",
+						"fileType" : "高数",
+						"fileUploadDate" : "2014-09-15",
+						"fileDescription" : "超好用的高数资料",
+						"fileLocation" : "???",
+						"fileTimes" : 0,
+						"commentList" : [
+										{
+											"commentId" : 1,
+											"commentDate" : "2014-09-15",
+											"commentContent" : "真是一个很好的复习资料",
+											"peopleId" : 1
+										}
+									]
+
+					},
+					{
+						"fileId" : 2,
+						"fileName" : "数据结构复习资料",
+						"fileType" : "数据结构",
+						"fileUploadDate" : "2014-09-14",
+						"fileDescription" : "超好用的数据结构资料",
+						"fileLocation" : "???",
+						"fileTimes" : 0
+					}
+	],
+
+	"downloadFileList" : [
+
+						{
+							"fileId" : 1,
+							"fileName" : "高数大一下复习资料",
+							"fileType" : "高数",
+							"fileDescription" : "超好用的高数资料",
+							"fileLocation" : "???",
+							"downloadDate" : "2014-09-15"
+						}
+ 					],
+
+
+
+ 	"commentList" : [
+						{
+							"commentId" : 1,
+							"fileId" : 1,
+							"fileName" : "高数大一下复习资料",
+							"commentDate" : "2014-09-15",
+							"commentContent" : "真是一个很好的复习资料",
+						}
+					],
+
+
+	"sendPromptList" : [
+					{
+						"promptId" : 1,
+						"promptContent" : "快来学习高数",
+						"promptDate" : "2014-09-15",
+						"getPeopleId" : 1
+					}
+
+					]
+
+
+	"getPromptList" :[
+					{
+						"status" : "未读",
+						"promptId" : 1,
+						"promptContent" : "快来学习高数",
+						"promptDate" : "2014-09-15",
+						"sendPeopleId" : "1"
+					}
+					]
+
+}
+
+
+
+
+{
+	"roomId" : 1,
+	"roomName" : "高数专用",
+	"roomDescription" : "这里是高数重修学习的房间",
+	"roomDate" : "2014-09-15",
+	"peopleList" : [
+					{
+					"peopleId" : 1
+					},
+					{
+					"peopleId" : 2
+					}
+					]
+}
+
+
+
+{
+	"peopleId" : 0,
+	"fileId" : 0,
+	"commentId" : 0,
+	"roomId" : 0,
+	"promptId" : 0
+
+}
+
+
+
